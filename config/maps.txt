@@ -89,3 +89,7 @@ endmap
 map snowglobe
 	votable
 endmap
+
+map thalassostation
+	votable
+endmap

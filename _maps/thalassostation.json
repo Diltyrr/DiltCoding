@@ -1,0 +1,46 @@
+{
+	"version": 1,
+	"map_name": "ThalassoStation",
+	"map_path": "map_files/thalassostation",
+	"map_file": "ThalassoStation.dmm",
+	"space_ruin_levels": 0,
+	"space_empty_levels": 0,
+	"planetary": 1,
+	"shuttles": {
+		"cargo": "cargo_skyrat",
+		"ferry": "ferry_skyrat",
+		"whiteship": "whiteship_box",
+		"emergency": "emergency_skyrat"
+	},
+	"traits": [
+		{
+			"Up": true,
+			"No X-Ray": true,
+			"Linkage": null,
+			"Gravity": true,
+			"Baseturf": "/turf/closed/mineral/random/high_chance/ocean"
+		},
+		{
+			"Up": true,
+			"Down": true,
+			"Linkage": null,
+			"Gravity": true,
+			"Baseturf": "/turf/closed/mineral/random/low_chance/ocean"
+
+		},
+		{
+			"Up": true,
+			"Down": true,
+			"Linkage": null,
+			"Gravity": true,
+			"Baseturf": "/turf/open/misc/ocean"
+		},
+		{
+			"Down": true,
+			"Linkage": null,
+			"Gravity": true,
+			"Baseturf": "/turf/open/openspace/thalassostation/surface",
+			"Weather_Rainstorm": true
+		}
+	]
+}
