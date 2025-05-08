@@ -1,34 +1,16 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
 "a" = (
-/turf/open/genturf,
+/turf/open/openspace/thalassostation/surface,
 /area/panthalassic/surface)
 "c" = (
 /turf/open/genturf,
 /area/panthalassic/mesopelagic)
-"s" = (
-/turf/open/misc/beach/sand/thalassostation,
-/area/panthalassic/surface)
-"v" = (
-/turf/open/floor/wood/large/thalassostation,
-/area/panthalassic/surface)
 "E" = (
 /turf/open/genturf,
 /area/panthalassic/floor)
 "G" = (
 /turf/open/genturf,
 /area/panthalassic/bathypelagic)
-"N" = (
-/obj/docking_port/stationary{
-	dir = 8;
-	dwidth = 3;
-	height = 15;
-	name = "arrivals";
-	roundstart_template = /datum/map_template/shuttle/arrival/box;
-	shuttle_id = "arrival_stationary";
-	width = 7
-	},
-/turf/open/misc/beach/sand/thalassostation,
-/area/panthalassic/surface)
 
 (1,1,1) = {"
 G
@@ -196639,14 +196621,14 @@ E
 "}
 
 (1,1,4) = {"
-s
-s
-s
-s
-s
-s
-s
-s
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a
@@ -196896,14 +196878,14 @@ a
 a
 "}
 (2,1,4) = {"
-s
-s
-s
-s
-s
-s
-s
-s
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a
@@ -197153,14 +197135,14 @@ a
 a
 "}
 (3,1,4) = {"
-s
-s
-s
-s
-s
-s
-s
-s
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a
@@ -197410,16 +197392,16 @@ a
 a
 "}
 (4,1,4) = {"
-s
-s
-s
-s
-s
-s
-s
-s
-v
-v
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a
@@ -197667,16 +197649,16 @@ a
 a
 "}
 (5,1,4) = {"
-s
-s
-s
-s
-s
-s
-s
-s
 a
-v
+a
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a
@@ -197924,16 +197906,16 @@ a
 a
 "}
 (6,1,4) = {"
-s
-s
-s
-s
-s
-s
-s
-s
 a
-v
+a
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a
@@ -198181,16 +198163,16 @@ a
 a
 "}
 (7,1,4) = {"
-s
-s
-s
-s
-s
-s
-s
-s
 a
-v
+a
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a
@@ -198438,16 +198420,16 @@ a
 a
 "}
 (8,1,4) = {"
-s
-s
-s
-s
-s
-s
-s
-s
 a
-v
+a
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a
@@ -198695,16 +198677,16 @@ a
 a
 "}
 (9,1,4) = {"
-s
-s
-s
-s
-s
-s
-s
-s
 a
-v
+a
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a
@@ -198952,16 +198934,16 @@ a
 a
 "}
 (10,1,4) = {"
-s
-s
-s
-s
-s
-s
-s
-s
-v
-v
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a
@@ -199209,14 +199191,14 @@ a
 a
 "}
 (11,1,4) = {"
-s
-s
-s
-s
-s
-s
-s
-s
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a
@@ -199466,14 +199448,14 @@ a
 a
 "}
 (12,1,4) = {"
-s
-s
-s
-s
-N
-s
-s
-s
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a
@@ -199723,14 +199705,14 @@ a
 a
 "}
 (13,1,4) = {"
-s
-s
-s
-s
-s
-s
-s
-s
+a
+a
+a
+a
+a
+a
+a
+a
 a
 a
 a

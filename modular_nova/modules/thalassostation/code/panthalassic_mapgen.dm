@@ -1,28 +1,7 @@
-/datum/map_generator/cave_generator/panthalassic_surface_generator
-
-	weighted_open_turf_types = list(
-		/turf/open/openspace/thalassostation/surface = 1
-	)
-
-	weighted_mob_spawn_list = list(
-			/mob/living/basic/crab = 1
-	)
-
-	mob_spawn_chance = 1
-
-	flora_spawn_chance = 25
-
-	weighted_flora_spawn_list = list(
-		/obj/structure/flora/coconuts = 1,
-		/obj/structure/flora/tree/palm/style_random =1,
-		/obj/item/toy/seashell = 1
-	)
-
-
 /datum/map_generator/cave_generator/panthalassic_oceanfloor_generator
 
 	weighted_open_turf_types = list(
-		/turf/open/openspace/thalassostation = 1
+		/turf/open/openspace/ocean/thalassostation = 1
 	)
 
 	weighted_closed_turf_types = list(
@@ -52,7 +31,7 @@
 	)
 
 	weighted_closed_turf_types = list(
-		/turf/closed/mineral/random/low_chance/ocean/thalassosstation = 1
+		/turf/closed/mineral/random/low_chance/ocean/thalassostation = 1
 	)
 
 	weighted_mob_spawn_list = list(
@@ -74,7 +53,7 @@
 /datum/map_generator/cave_generator/panthalassic_bathypelagic_generator
 
 	weighted_open_turf_types = list(
-		/turf/open/misc/ocean/rock/heavy/thalassostation = 1
+		/turf/open/misc/ocean/rock/heavy/thalassostation =1
 	)
 
 	weighted_closed_turf_types = list(

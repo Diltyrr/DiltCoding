@@ -7,25 +7,25 @@
 	"space_empty_levels": 0,
 	"planetary": 1,
 	"shuttles": {
-		"cargo": "cargo_skyrat",
-		"ferry": "ferry_skyrat",
+		"cargo": "cargo_nova",
+		"ferry": "ferry_fancy",
 		"whiteship": "whiteship_box",
-		"emergency": "emergency_skyrat"
+		"emergency": "emergency_box"
 	},
 	"traits": [
 		{
-			"Up": true,
 			"No X-Ray": true,
 			"Linkage": null,
 			"Gravity": true,
-			"Baseturf": "/turf/closed/mineral/random/high_chance/ocean"
+			"mining": true,
+			"Baseturf": "/turf/open/misc/ocean/rock/thalassostation"
 		},
 		{
 			"Up": true,
-			"Down": true,
 			"Linkage": null,
 			"Gravity": true,
-			"Baseturf": "/turf/closed/mineral/random/low_chance/ocean"
+			"mining": true,
+			"Baseturf": "/turf/open/misc/ocean/thalassostation"
 
 		},
 		{
@@ -33,7 +33,7 @@
 			"Down": true,
 			"Linkage": null,
 			"Gravity": true,
-			"Baseturf": "/turf/open/misc/ocean"
+			"Baseturf": "/turf/open/openspace/ocean/thalassostation"
 		},
 		{
 			"Down": true,
@@ -42,5 +42,11 @@
 			"Baseturf": "/turf/open/openspace/thalassostation/surface",
 			"Weather_Rainstorm": true
 		}
-	]
+	],
+	"minetype": "none",
+	"job_changes": {
+		"Captain": {
+			"special_charter": "moon"
+		}
+	}
 }
