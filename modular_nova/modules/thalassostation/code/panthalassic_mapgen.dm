@@ -1,11 +1,11 @@
-/datum/map_generator/cave_generator/panthalassic_oceanfloor_generator
+/datum/map_generator/cave_generator/panthalassic_mid_generator
 
 	weighted_open_turf_types = list(
-		/turf/open/openspace/ocean/thalassostation = 1
+		/turf/open/openspace/thalassostation/submerged = 1
 	)
 
 	weighted_closed_turf_types = list(
-		/turf/closed/mineral/random/stationside/ocean/thalassostation =1
+		/turf/closed/mineral/random/stationside/thalassosation =1
 	)
 
 	weighted_mob_spawn_list = list(
@@ -24,14 +24,14 @@
 		/obj/item/toy/seashell = 1
 	)
 
-/datum/map_generator/cave_generator/panthalassic_mesopelagic_generator
+/datum/map_generator/cave_generator/panthalassic_oceanfloor_generator
 
 	weighted_open_turf_types = list(
-		/turf/open/misc/ocean/thalassostation = 1
+		/turf/open/misc/thalassostation/bottom = 1
 	)
 
 	weighted_closed_turf_types = list(
-		/turf/closed/mineral/random/low_chance/ocean/thalassostation = 1
+		/turf/closed/mineral/random/low_chance/thalassosation = 1
 	)
 
 	weighted_mob_spawn_list = list(
@@ -53,11 +53,11 @@
 /datum/map_generator/cave_generator/panthalassic_bathypelagic_generator
 
 	weighted_open_turf_types = list(
-		/turf/open/misc/ocean/rock/heavy/thalassostation =1
+		/turf/open/misc/thalassostation/rock/heavy =1
 	)
 
 	weighted_closed_turf_types = list(
-		/turf/closed/mineral/random/high_chance/ocean/thalassostation = 1
+		/turf/closed/mineral/random/high_chance/thalassosation = 1
 	)
 
 	weighted_mob_spawn_list = list(

@@ -1,4 +1,12 @@
-///Surface default tile, can Z_move through it.
+/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation
+	reagent_list = list(/datum/reagent/water/salt)
+	total_reagents = 600
+	starting_temp = 300
+
+/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/bathypelagic
+	starting_temp = 277
+
+/// Surface default tile, can Z_move through it.
 /turf/open/openspace/thalassostation/surface
 	alpha = 200
 	base_icon_state = "water"
@@ -11,61 +19,192 @@
 	var/immerse_overlay_color = "#7799AA"
 	planetary_atmos = 1
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
+	liquid_height = LIQUID_SHOULDERS_LEVEL_HEIGHT
 
-///first underwater default open
-/turf/open/openspace/ocean/thalassostation
-	planetary_atmos = 1
-	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
-
-/turf/open/openspace/ocean/thalassostation/Initialize(mapload)
+/turf/open/openspace/thalassostation/surface/Initialize(mapload)
 	. = ..()
 	if (!.)
 		return
+	liquids = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation)
 	AddElement(/datum/element/swimming_tile)
 
-///first underwater default closed
-/turf/closed/mineral/random/stationside/ocean/thalassostation
+///edited from modular_nova/module_liquids/code/ocean_turf.dm I need specific versions with different liquids, temp, and initialize logic. Overriding the ocean tile just gets messy.
+/turf/open/openspace/thalassostation/submerged
+	name = "ocean"
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
-	baseturfs = /turf/open/misc/ocean/rock/thalassostation
+	planetary_atmos = TRUE
+	baseturfs = /turf/open/openspace/thalassostation/submerged
+	var/replacement_turf = /turf/open/misc/thalassostation
 
-///second underwater layer default open
-/turf/open/misc/ocean/thalassostation
-	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
-	planetary_atmos = 1
-
-/turf/open/misc/ocean/thalassostation/Initialize(mapload)
+/turf/open/openspace/thalassostation/submerged/LateInitialize()
 	. = ..()
-	if (!.)
+	var/turf/turfbelow = GET_TURF_BELOW(src)
+	if(!turfbelow)
+		for(var/obj/structure/unsupported_structure in contents)
+			qdel(unsupported_structure)
+	if(isclosedturf(turfbelow))
+		var/turf/newturf = ChangeTurf(replacement_turf, null, CHANGETURF_IGNORE_AIR)
+		if(!isopenspaceturf(newturf)) // only openspace turfs should be returning INITIALIZE_HINT_LATELOAD
+			return INITIALIZE_HINT_NORMAL
 		return
-	AddElement(/datum/element/swimming_tile)
 
-/turf/open/misc/ocean/rock/thalassostation
-	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
-	planetary_atmos = 1
-
-/turf/open/misc/ocean/rock/thalassostation/Initialize(mapload)
+/turf/open/openspace/thalassostation/Initialize(mapload)
 	. = ..()
-	if (!.)
-		return
-	AddElement(/datum/element/swimming_tile)
+	if(liquids)
+		if(liquids.immutable)
+			liquids.remove_turf(src)
+		else
+			qdel(liquids, TRUE)
+	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation)
+	new_immmutable.add_turf(src)
 
-///second underwater layer default closed.
-/turf/closed/mineral/random/low_chance/ocean/thalassostation
+/turf/open/misc/ironsand/thalassostation
+	planetary_atmos = TRUE
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
-	baseturfs = /turf/open/misc/ocean/rock/thalassostation
+	baseturfs = /turf/open/misc/thalassostation
 
-///third undeerwater layer default open
-/turf/open/misc/ocean/rock/heavy/thalassostation
-	initial_gas_mix = THALASSOSTATION_BATHYPELAGIC_ATMOS
-	planetary_atmos = 1
-
-/turf/open/misc/ocean/rock/heavy/thalassostation/Initialize(mapload)
+/turf/open/misc/ironsand/thalassostation/Initialize(mapload)
 	. = ..()
-	if (!.)
-		return
-	AddElement(/datum/element/swimming_tile)
+	if(liquids)
+		if(liquids.immutable)
+			liquids.remove_turf(src)
+		else
+			qdel(liquids, TRUE)
+	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
+	new_immmutable.add_turf(src)
 
-///third underwater layer default closed
-/turf/closed/mineral/random/high_chance/ocean/thalassostation
-	initial_gas_mix = THALASSOSTATION_BATHYPELAGIC_ATMOS
-	baseturfs = /turf/open/misc/ocean/rock/heavy/thalassostation
+
+/turf/open/misc/thalassostation/rock
+	name = "rock"
+	desc = "Polished over centuries of undersea weather conditions and a distinct lack of light."
+	baseturfs = /turf/open/misc/thalassostation/rock
+	icon = 'modular_nova/modules/liquids/icons/turf/seafloor.dmi'
+	icon_state = "seafloor"
+	base_icon_state = "seafloor"
+	rand_variants = 0
+
+/turf/open/misc/thalassostation/rock/heavy
+	icon_state = "seafloor_heavy"
+	base_icon_state = "seafloor_heavy"
+	baseturfs = /turf/open/misc/thalassostation/rock/heavy
+
+/turf/open/misc/thalassostation/rock/heavy/bathypelagic
+	icon_state = "seafloor_heavy"
+	base_icon_state = "seafloor_heavy"
+	baseturfs = /turf/open/misc/thalassostation/rock/heavy
+	liquid_type = /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/bathypelagic
+
+/turf/open/misc/thalassostation
+	gender = PLURAL
+	name = "ocean sand"
+	desc = "If you can't escape sandstorms underwater, is anywhere safe?"
+	baseturfs = /turf/open/openspace/thalassostation/submerged
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "asteroid"
+	base_icon_state = "asteroid"
+	footstep = FOOTSTEP_SAND
+	barefootstep = FOOTSTEP_SAND
+	clawfootstep = FOOTSTEP_SAND
+	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
+	planetary_atmos = 1
+	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
+	var/rand_variants = 12
+	var/rand_chance = 30
+	var/liquid_type = /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation
+
+/turf/open/misc/thalassostation/bottom
+	baseturfs = /turf/open/misc/thalassostation/bottom
+
+
+/turf/open/misc/thalassostation/Initialize(mapload)
+	. = ..()
+	if(liquids)
+		if(liquids.immutable)
+			liquids.remove_turf(src)
+		else
+			qdel(liquids, TRUE)
+	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(liquid_type, src)
+	new_immmutable.add_turf(src)
+
+	if(rand_variants && prob(rand_chance))
+		var/random = rand(1,rand_variants)
+		icon_state = "[icon_state][random]"
+		base_icon_state = "[icon_state][random]"
+
+/turf/open/floor/plating/thalassostation_plating
+	baseturfs = /turf/open/misc/thalassostation
+	planetary_atmos = TRUE
+	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
+
+/turf/open/floor/plating/thalassostation_plating/Initialize(mapload)
+	. = ..()
+	if(liquids)
+		if(liquids.immutable)
+			liquids.remove_turf(src)
+		else
+			qdel(liquids, TRUE)
+	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
+	new_immmutable.add_turf(src)
+
+/turf/open/floor/iron/thalassostation
+	planetary_atmos = TRUE
+	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
+	baseturfs = /turf/open/floor/plating/thalassostation_plating
+
+/turf/open/floor/iron/thalassostation/Initialize(mapload)
+	. = ..()
+	if(liquids)
+		if(liquids.immutable)
+			liquids.remove_turf(src)
+		else
+			qdel(liquids, TRUE)
+	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
+	new_immmutable.add_turf(src)
+
+/turf/open/floor/glass/reinforced/thalassosation
+	planetary_atmos = TRUE
+	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
+	baseturfs = /turf/open/floor/plating/thalassostation_plating
+
+/turf/open/floor/glass/reinforced/thalassostation/Initialize(mapload)
+	. = ..()
+	if(liquids)
+		if(liquids.immutable)
+			liquids.remove_turf(src)
+		else
+			qdel(liquids, TRUE)
+	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
+	new_immmutable.add_turf(src)
+
+/turf/closed/mineral/random/thalassosation
+	baseturfs = /turf/open/misc/thalassostation/rock/heavy
+	turf_type = /turf/open/misc/thalassostation/rock/heavy
+	color = "#58606b"
+
+/turf/closed/mineral/random/high_chance/thalassosation
+	baseturfs = /turf/open/misc/thalassostation/rock/heavy
+	turf_type = /turf/open/misc/thalassostation/rock/heavy
+	color = "#58606b"
+
+/turf/closed/mineral/random/low_chance/thalassosation
+	baseturfs = /turf/open/misc/thalassostation/rock/heavy
+	turf_type = /turf/open/misc/thalassostation/rock/heavy
+	color = "#58606b"
+
+/turf/closed/mineral/random/stationside/thalassosation
+	baseturfs = /turf/open/openspace/thalassostation/submerged
+	turf_type = /turf/open/misc/thalassostation/rock/heavy
+	color = "#58606b"
+
+/turf/closed/mineral/random/low_chance/ocean/thalassostation/gets_drilled(mob/user, give_exp)
+	. = ..()
+
+	var/turf/turf_above = GET_TURF_ABOVE(src)
+	if (!turf_above)
+		return
+
+	if (istype(turf_above, /turf/open/misc/thalassostation))
+		ChangeTurf(/turf/open/openspace/thalassostation/submerged)
+
+
+///end of the copy and edit of ocean_turfs.dm

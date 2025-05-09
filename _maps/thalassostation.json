@@ -18,14 +18,14 @@
 			"Linkage": null,
 			"Gravity": true,
 			"mining": true,
-			"Baseturf": "/turf/open/misc/ocean/rock/thalassostation"
+			"Baseturf": "/turf/open/misc/thalassostation/rock/heavy/bathypelagic"
 		},
 		{
 			"Up": true,
 			"Linkage": null,
 			"Gravity": true,
 			"mining": true,
-			"Baseturf": "/turf/open/misc/ocean/thalassostation"
+			"Baseturf": "/turf/open/misc/thalassostation/bottom"
 
 		},
 		{
@@ -33,7 +33,7 @@
 			"Down": true,
 			"Linkage": null,
 			"Gravity": true,
-			"Baseturf": "/turf/open/openspace/ocean/thalassostation"
+			"Baseturf": "/turf/open/openspace/thalassostation/submerged"
 		},
 		{
 			"Down": true,
