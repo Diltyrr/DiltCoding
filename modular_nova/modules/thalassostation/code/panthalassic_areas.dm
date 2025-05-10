@@ -12,7 +12,7 @@
 
 /area/panthalassic/middle
 	name = "Ocean"
-	area_flags = CAVES_ALLOWED | FLORA_ALLOWED | MOB_SPAWN_ALLOWED
+	area_flags = CAVES_ALLOWED | MOB_SPAWN_ALLOWED
 	map_generator = /datum/map_generator/cave_generator/panthalassic_mid_generator
 	outdoors = TRUE
 
