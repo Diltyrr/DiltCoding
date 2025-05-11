@@ -106,6 +106,14 @@
 	var/liquid_type = /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation
 	liquid_height = LIQUID_HEIGHT_CONSIDER_FULL_TILE
 
+/turf/open/misc/thalassostation/LateInitialize()
+	. = ..()
+	var/turf/turfabove = GET_TURF_ABOVE(src)
+	if(istype(turfabove, /turf/open/openspace))
+		///placeholder for godrays
+		new /obj/effect/overlay/spotlight/sunrays(src)
+	return
+
 ///Needed because using the cavegen flora generator will spawn floating structure since I'm using openspaces.
 /turf/open/misc/thalassostation/Initialize(mapload)
 	. = ..()

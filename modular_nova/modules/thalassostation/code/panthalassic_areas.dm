@@ -1,7 +1,7 @@
 /area/panthalassic/surface
 	name = "Beach"
 	area_has_base_lighting = TRUE
-	base_lighting_alpha = 80
+	base_lighting_alpha = 110
 	area_flags = FLORA_ALLOWED | MOB_SPAWN_ALLOWED
 	outdoors = TRUE
 
