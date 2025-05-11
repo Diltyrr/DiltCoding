@@ -19,14 +19,8 @@
 	var/immerse_overlay_color = "#7799AA"
 	planetary_atmos = 1
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
-	liquid_height = LIQUID_SHOULDERS_LEVEL_HEIGHT
-
-/turf/open/openspace/thalassostation/surface/Initialize(mapload)
-	. = ..()
-	if (!.)
-		return
-	liquids = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation)
-	AddElement(/datum/element/swimming_tile)
+	turf_height = -30
+	liquid_height = LIQUID_SHOULDERS_LEVEL_HEIGHT-30
 
 ///edited from modular_nova/module_liquids/code/ocean_turf.dm I need specific versions with different liquids, temp, and initialize logic. Overriding the ocean tile just gets messy.
 /turf/open/openspace/thalassostation/submerged
@@ -35,6 +29,7 @@
 	planetary_atmos = TRUE
 	baseturfs = /turf/open/openspace/thalassostation/submerged
 	var/replacement_turf = /turf/open/misc/thalassostation
+	liquid_height = LIQUID_HEIGHT_CONSIDER_FULL_TILE
 
 /turf/open/openspace/thalassostation/submerged/LateInitialize()
 	. = ..()
@@ -54,12 +49,13 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation)
 	new_immmutable.add_turf(src)
-	AddElement(/datum/element/swimming_tile)
 
 /turf/open/misc/ironsand/thalassostation
 	planetary_atmos = TRUE
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
 	baseturfs = /turf/open/misc/thalassostation
+	liquid_height = LIQUID_HEIGHT_CONSIDER_FULL_TILE
+
 
 /turf/open/misc/ironsand/thalassostation/Initialize(mapload)
 	. = ..()
@@ -70,7 +66,6 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.add_turf(src)
-	AddElement(/datum/element/swimming_tile)
 
 /turf/open/misc/thalassostation/rock
 	name = "rock"
@@ -109,11 +104,12 @@
 	var/rand_variants = 12
 	var/rand_chance = 30
 	var/liquid_type = /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation
+	liquid_height = LIQUID_HEIGHT_CONSIDER_FULL_TILE
 
 ///Needed because using the cavegen flora generator will spawn floating structure since I'm using openspaces.
-/turf/open/misc/ocean/thalassostation/Initialize(mapload)
+/turf/open/misc/thalassostation/Initialize(mapload)
 	. = ..()
-	if (prob(50))
+	if (prob(20))
 		var/list/possible_spawns = list(
 			/obj/structure/flora/ocean/coral,
 			/obj/structure/flora/ocean/longseaweed,
@@ -138,7 +134,6 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(liquid_type, src)
 	new_immmutable.add_turf(src)
-	AddElement(/datum/element/swimming_tile)
 
 	if(rand_variants && prob(rand_chance))
 		var/random = rand(1,rand_variants)
@@ -149,6 +144,7 @@
 	baseturfs = /turf/open/misc/thalassostation
 	planetary_atmos = TRUE
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
+	liquid_height = LIQUID_HEIGHT_CONSIDER_FULL_TILE
 
 /turf/open/floor/plating/thalassostation_plating/Initialize(mapload)
 	. = ..()
@@ -159,12 +155,12 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.add_turf(src)
-	AddElement(/datum/element/swimming_tile)
 
 /turf/open/floor/iron/thalassostation
 	planetary_atmos = TRUE
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
 	baseturfs = /turf/open/floor/plating/thalassostation_plating
+	liquid_height = LIQUID_HEIGHT_CONSIDER_FULL_TILE
 
 /turf/open/floor/iron/thalassostation/Initialize(mapload)
 	. = ..()
@@ -175,12 +171,12 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.add_turf(src)
-	AddElement(/datum/element/swimming_tile)
 
 /turf/open/floor/glass/reinforced/thalassosation
 	planetary_atmos = TRUE
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
 	baseturfs = /turf/open/floor/plating/thalassostation_plating
+	liquid_height = LIQUID_HEIGHT_CONSIDER_FULL_TILE
 
 /turf/open/floor/glass/reinforced/thalassostation/Initialize(mapload)
 	. = ..()
@@ -191,7 +187,6 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.add_turf(src)
-	AddElement(/datum/element/swimming_tile)
 
 /turf/closed/mineral/random/thalassosation
 	baseturfs = /turf/open/misc/thalassostation/rock/heavy

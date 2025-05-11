@@ -1,15 +1,27 @@
-/datum/element/swimming_tile/enter_water(atom/source, mob/living/swimmer)
-    . = ..()
-    // Add floating animation (for visual feedback)
-    DO_FLOATING_ANIM(swimmer)
+/turf/open/Enter(atom/movable/mover)
+	. = ..()
+	if(!src.liquids)
+		return
+	if(!istype(mover, /mob/living/carbon))
+		return
 
-    // Give the swimmer the flying movement trait
-    ADD_TRAIT(swimmer, TRAIT_MOVE_FLYING, ELEMENT_TRAIT(type))
+	var/liquid_height_with_offset = src.liquid_height - src.turf_height
+	if(liquid_height_with_offset < LIQUID_STATE_WAIST)
+		return
 
-/datum/element/swimming_tile/out_of_water(atom/source, mob/living/landlubber)
-    . = ..()
-    // Stop floating animation
-    STOP_FLOATING_ANIM(landlubber)
+	ADD_TRAIT(mover, TRAIT_MOVE_FLYING, ELEMENT_TRAIT(type))
 
-    // Remove the flying trait when leaving the water
-    REMOVE_TRAIT(landlubber, TRAIT_MOVE_FLYING, ELEMENT_TRAIT(type))
+/turf/open/Exited(atom/movable/gone, direction)
+	. = ..()
+	if(!istype(gone, /mob/living/carbon))
+		return
+
+	if(!HAS_TRAIT(gone, TRAIT_MOVE_FLYING))
+		return
+
+	if(src.liquids)
+		var/liquid_height_with_offset = src.liquid_height - src.turf_height
+		if(liquid_height_with_offset > LIQUID_STATE_WAIST)
+			return
+
+	REMOVE_TRAIT(gone, TRAIT_MOVE_FLYING, ELEMENT_TRAIT(type))
