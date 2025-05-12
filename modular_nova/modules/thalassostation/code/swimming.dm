@@ -1,8 +1,5 @@
-/// Items that should make you sink to the bottom.
-var/list/heavy_gear = list(
-	/obj/item/clothing/shoes/magboots,
-	/obj/item/storage/backpack/duffelbag,
-	/obj/item/mod/control
+/// Items that have neutral buyoancy
+var/list/swimming_gear = list(
 )
 
 /// Items that should make you float to the top.
@@ -10,36 +7,59 @@ var/list/flotation_gear = list(
 	/obj/item/clothing/suit/hazardvest/lifejacket
 )
 
+///Adding the relevant component to swim gear.
+/obj/item/Initialize()
+	. = ..()
+
+	// Skip buoyancy setup for body parts.
+	if(istype(src, /obj/item/bodypart))
+		return
+
+	if(type in flotation_gear)
+		src.should_float = TRUE
+	else if(!(type in swimming_gear))
+		src.should_sink = TRUE
+
 /// Mob buoyancy flags
 /atom/movable
 	var/should_sink = FALSE
 	var/should_float = FALSE
 
-/// Recalculate buoyancy based on carried gear
+// Checks equipped gear, compares with above list.
 /mob/living/proc/update_buoyancy()
 	should_sink = FALSE
 	should_float = FALSE
 
+	var/found_flotation = FALSE
+	var/found_heavy = FALSE
+
 	for(var/obj/item/carried_item in src.contents)
-		if(!should_sink && heavy_gear.Find(carried_item.type))
-			should_sink = TRUE
-		if(!should_float && flotation_gear.Find(carried_item.type))
-			should_float = TRUE
-		if(should_sink && should_float)
+		if(carried_item.should_float)
+			found_flotation = TRUE
+		else if(carried_item.should_sink)
+			found_heavy = TRUE
+
+		if(found_flotation && found_heavy)
 			break
 
-	if(should_sink && should_float)
-		should_sink = FALSE
-		should_float = FALSE
+	// Final buoyancy logic
+	if(found_flotation && !found_heavy)
+		should_float = TRUE
+	else if(found_heavy && !found_flotation)
+		should_sink = TRUE
+	// If both, do nothing (neutral)
+
+	src.do_sink_or_float()
+
 
 /// Perform buoyancy effect (sink or float)
-/mob/living/carbon/proc/do_sink_or_float()
-	var/turf/swimmer_turf = src.loc
-	if(!should_sink && !should_float)
+/mob/living/proc/do_sink_or_float()
+	var/turf/open/swimmer_turf = src.loc
+	if(!istype(swimmer_turf) || (!should_sink && !should_float))
 		return
 
 	var/turf/turf_below = GET_TURF_BELOW(swimmer_turf)
-	if(should_sink && istype(swimmer_turf, /turf/open/openspace) && istype(turf_below, /turf/open))
+	if(should_sink && swimmer_turf.allow_sinking && istype(turf_below, /turf/open))
 		src.visible_message(
 			span_danger("[src] sinks like a stone!"),
 			span_userdanger("You feel yourself pulled to the bottom!")
@@ -48,48 +68,48 @@ var/list/flotation_gear = list(
 		return
 
 	var/turf/turf_above = GET_TURF_ABOVE(swimmer_turf)
-	if(should_float && istype(turf_above, /turf/open/openspace) && !istype(swimmer_turf, /turf/open/openspace/thalassostation/surface))
+
+	if(should_float && istype(turf_above, /turf/open/openspace) && turf_above.liquids && !swimmer_turf.surface)
 		src.visible_message(
 			span_danger("[src] shoots up toward the surface!"),
 			span_userdanger("You feel yourself pulled upward!")
 		)
 		GLOB.move_manager.move(src, UP)
 
-/obj/item/pickup(mob/user)
+/obj/item/equipped(mob/user, slot, initial)
 	. = ..()
-	if(istype(user, /mob/living))
-		var/mob/living/living_user = user
-		living_user.update_buoyancy()
-		if(istype(living_user, /mob/living/carbon))
-			var/mob/living/carbon/carbon_user = living_user
-			carbon_user.do_sink_or_float()
+	if(!istype(user, /mob/living))
+		return
 
-/obj/item/dropped(mob/user, silent)
-	. = ..()
-	if(istype(user, /mob/living))
-		var/mob/living/living_user = user
-		living_user.update_buoyancy()
-		if(istype(living_user, /mob/living/carbon))
-			var/mob/living/carbon/carbon_user = living_user
-			carbon_user.do_sink_or_float()
+	var/mob/living/equipper = user
+	equipper.update_buoyancy()
 
 /turf/open/Enter(atom/movable/moving_object)
 	. = ..()
-	if(!src.liquids || !istype(moving_object, /mob/living/carbon))
+	if(!src.liquids)
 		return
 
+	var/turf_below = GET_TURF_BELOW(src)
 	if(moving_object.should_sink)
-		moving_object.visible_message(
-			span_danger("[moving_object] sinks like a stone!"),
-			span_userdanger("You feel yourself pulled to the bottom!")
-		)
+		if(src.allow_sinking && istype(turf_below, /turf/open))
+			moving_object.visible_message(
+				span_danger("[moving_object] sinks like a stone!"),
+				span_userdanger("You feel yourself pulled to the bottom!")
+			)
+			if(HAS_TRAIT(moving_object,TRAIT_MOVE_FLYING))
+				REMOVE_TRAIT(moving_object, TRAIT_MOVE_FLYING, ELEMENT_TRAIT(type))
 		return
 
+	///can't swim on the surface of a tile with less than waist level water.
 	var/liquid_height_with_offset = src.liquid_height - src.turf_height
 	if(liquid_height_with_offset < LIQUID_STATE_WAIST)
 		return
 
 	ADD_TRAIT(moving_object, TRAIT_MOVE_FLYING, ELEMENT_TRAIT(type))
+	moving_object.visible_message(
+				span_notice("[moving_object]starts to swim."),
+				span_notice("You start to swim.")
+			)
 
 	if(istype(moving_object, /mob/living/carbon))
 		var/mob/living/carbon/carbon_object = moving_object

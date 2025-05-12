@@ -1,10 +1,23 @@
 /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation
-	reagent_list = list(/datum/reagent/water/salt)
-	total_reagents = 600
+	starting_mixture = list(/datum/reagent/water/salt = 600)
 	starting_temp = 300
+
+/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation
+	starting_mixture = list(/datum/reagent/water/salt = 300)
+
+//should be lower
+/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/surface
+
 
 /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/bathypelagic
 	starting_temp = 277
+
+/turf/open
+	var/allow_sinking = FALSE
+	var/surface = FALSE //needed to determine when to stop flotation devices
+
+/turf/open/openspace
+	allow_sinking = TRUE
 
 /// Surface default tile, can Z_move through it.
 /turf/open/openspace/thalassostation/surface
@@ -21,6 +34,8 @@
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
 	turf_height = -30
 	liquid_height = LIQUID_SHOULDERS_LEVEL_HEIGHT-30
+	surface = TRUE
+
 
 ///edited from modular_nova/module_liquids/code/ocean_turf.dm I need specific versions with different liquids, temp, and initialize logic. Overriding the ocean tile just gets messy.
 /turf/open/openspace/thalassostation/submerged
@@ -40,7 +55,18 @@
 			return INITIALIZE_HINT_NORMAL
 	return
 
-/turf/open/openspace/thalassostation/Initialize(mapload)
+
+/turf/open/openspace/thalassostation/surface/Initialize(mapload)
+	. = ..()
+	if(liquids)
+		if(liquids.immutable)
+			liquids.remove_turf(src)
+		else
+			qdel(liquids, TRUE)
+	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/surface)
+	new_immmutable.add_turf(src)
+
+/turf/open/openspace/thalassostation/submerged/Initialize(mapload)
 	. = ..()
 	if(liquids)
 		if(liquids.immutable)
@@ -106,13 +132,19 @@
 	var/liquid_type = /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation
 	liquid_height = LIQUID_HEIGHT_CONSIDER_FULL_TILE
 
-/turf/open/misc/thalassostation/LateInitialize()
+/turf/open/misc/thalassostation/Initialize()
 	. = ..()
-	var/turf/turfabove = GET_TURF_ABOVE(src)
-	if(istype(turfabove, /turf/open/openspace))
-		///placeholder for godrays
-		new /obj/effect/overlay/spotlight/sunrays(src)
-	return
+	var/turf/above = GET_TURF_ABOVE(src)
+	if(istype(above, /turf/open/openspace))
+		//need to find a good way to light them up.
+
+/turf/open/openspace/thalassostation/ChangeTurf(path, list/new_baseturfs, flags)
+	. = ..()
+	if(istype(src, /turf/open/openspace))
+		return
+	var/turf/below = GET_TURF_BELOW(src)
+		//cancel the previous change
+
 
 ///Needed because using the cavegen flora generator will spawn floating structure since I'm using openspaces.
 /turf/open/misc/thalassostation/Initialize(mapload)
