@@ -1,5 +1,5 @@
 /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation
-	starting_mixture = list(/datum/reagent/water/salt = 600)
+	starting_mixture = list(/datum/reagent/water/salt = 600) //This could probably be changed to a variable from a proc if we wanted the option to pick from different chemicals.
 	starting_temp = 300
 
 /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation
@@ -132,21 +132,23 @@
 	var/liquid_type = /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation
 	liquid_height = LIQUID_HEIGHT_CONSIDER_FULL_TILE
 
-/turf/open/misc/thalassostation/Initialize()
+/turf/open/Initialize()
 	. = ..()
 	var/turf/above = GET_TURF_ABOVE(src)
-	if(istype(above, /turf/open/openspace))
-		new /obj/effect/overlay/lightrays(src)
 
-/turf/open/openspace/thalassostation/ChangeTurf(path, list/new_baseturfs, flags)
+	// Check if the above turf has a liquid, the current turf is not openspace, and the above turf is openspace
+	if(above && istype(above, /turf/open/openspace) && above.liquids && !istype(src, /turf/open/openspace))
+		new /obj/effect/overlay/lightrays(src)  // Create the lightray effect on this turf
+
+
+///when we cover a lightray, it should vanish.
+/turf/open/openspace/ChangeTurf(path, list/new_baseturfs, flags)
 	. = ..()
 	if(istype(src, /turf/open/openspace))
 		return
-
 	var/turf/below = GET_TURF_BELOW(src)
 	if(!below)
 		return
-
 	for(var/obj/effect/overlay/lightrays/L in below.contents)
 		qdel(L)
 
@@ -252,14 +254,39 @@
 	turf_type = /turf/open/misc/thalassostation/rock/heavy
 	color = "#58606b"
 
+///end of the copy and edit of ocean_turfs.dm
+
 /turf/closed/mineral/random/low_chance/thalassosation/gets_drilled(mob/user, give_exp)
 	. = ..()
 
 	var/turf/turf_above = GET_TURF_ABOVE(src)
 	if (!turf_above)
 		return
-
 	if (istype(turf_above, /turf/open/misc/thalassostation))
+		for(var/obj/effect/overlay/lightrays/L in turf_above.contents)
+			qdel(L)
 		turf_above.ChangeTurf(/turf/open/openspace/thalassostation/submerged)
 
-///end of the copy and edit of ocean_turfs.dm
+/// we want mapchanges to cause flooding immediatly.
+/turf/closed/ChangeTurf(path, list/new_baseturfs, flags)
+	. = ..()
+	var/turf/above = GET_TURF_ABOVE(src)
+	// Check if there's liquid on the turf above and handle accordingly
+	if(above && above.liquids)
+		if(above.liquids.immutable)
+			SSliquids.active_immutables[above] = TRUE
+		else
+			SSliquids.add_active_turf(above)
+
+	for(var/turf/inactive_turf in get_adjacent_open_turfs(src))
+		if(inactive_turf && inactive_turf.liquids)  // Check if the turf has liquids
+			if(inactive_turf.liquids.immutable)
+				SSliquids.active_immutables[inactive_turf] = TRUE
+			else
+				SSliquids.add_active_turf(inactive_turf)
+
+/turf/open/ChangeTurf(path, list/new_baseturfs, flags)
+	. = ..()
+	if(istype(src, /turf/closed))
+		for(var/obj/effect/overlay/lightrays/L in src.contents)
+			qdel(L)
