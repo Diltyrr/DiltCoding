@@ -64,7 +64,7 @@
 		else
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/surface)
-	new_immmutable.add_turf(src)
+	new_immmutable.mapload_turf(src)
 
 /turf/open/openspace/thalassostation/submerged/Initialize(mapload)
 	. = ..()
@@ -74,7 +74,7 @@
 		else
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation)
-	new_immmutable.add_turf(src)
+	new_immmutable.mapload_turf(src)
 
 /turf/open/misc/ironsand/thalassostation
 	planetary_atmos = TRUE
@@ -91,7 +91,7 @@
 		else
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
-	new_immmutable.add_turf(src)
+	new_immmutable.mapload_turf(src)
 
 /turf/open/misc/thalassostation/rock
 	name = "rock"
@@ -136,15 +136,19 @@
 	. = ..()
 	var/turf/above = GET_TURF_ABOVE(src)
 	if(istype(above, /turf/open/openspace))
-		//need to find a good way to light them up.
+		new /obj/effect/overlay/lightrays(src)
 
 /turf/open/openspace/thalassostation/ChangeTurf(path, list/new_baseturfs, flags)
 	. = ..()
 	if(istype(src, /turf/open/openspace))
 		return
-	var/turf/below = GET_TURF_BELOW(src)
-		//cancel the previous change
 
+	var/turf/below = GET_TURF_BELOW(src)
+	if(!below)
+		return
+
+	for(var/obj/effect/overlay/lightrays/L in below.contents)
+		qdel(L)
 
 ///Needed because using the cavegen flora generator will spawn floating structure since I'm using openspaces.
 /turf/open/misc/thalassostation/Initialize(mapload)
@@ -173,7 +177,7 @@
 		else
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(liquid_type, src)
-	new_immmutable.add_turf(src)
+	new_immmutable.mapload_turf(src)
 
 	if(rand_variants && prob(rand_chance))
 		var/random = rand(1,rand_variants)
@@ -194,7 +198,7 @@
 		else
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
-	new_immmutable.add_turf(src)
+	new_immmutable.mapload_turf(src)
 
 /turf/open/floor/iron/thalassostation
 	planetary_atmos = TRUE
@@ -210,7 +214,7 @@
 		else
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
-	new_immmutable.add_turf(src)
+	new_immmutable.mapload_turf(src)
 
 /turf/open/floor/glass/reinforced/thalassosation
 	planetary_atmos = TRUE
@@ -226,7 +230,7 @@
 		else
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
-	new_immmutable.add_turf(src)
+	new_immmutable.mapload_turf(src)
 
 /turf/closed/mineral/random/thalassosation
 	baseturfs = /turf/open/misc/thalassostation/rock/heavy

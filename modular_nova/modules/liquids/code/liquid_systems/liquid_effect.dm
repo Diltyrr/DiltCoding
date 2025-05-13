@@ -639,6 +639,10 @@
 	RegisterSignal(T, COMSIG_ATOM_ENTERED, PROC_REF(movable_entered))
 	RegisterSignal(T, COMSIG_TURF_MOB_FALL, PROC_REF(mob_fall))
 
+/obj/effect/abstract/liquid_turf/proc/mapload_turf(turf/T) //alternate proc for mapload so we don't activate all turfs on an oceanmap.
+	T.liquids = src
+	T.vis_contents += src
+
 /obj/effect/abstract/liquid_turf/proc/remove_turf(turf/T)
 	SSliquids.active_immutables -= T
 	T.liquids = null
