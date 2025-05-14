@@ -36,13 +36,13 @@ var/list/flotation_gear = list(
 
 	src.do_sink_or_float(buoyancy)
 
-/mob/living/proc/do_sink_or_float(buoyancy)
+/atom/movable/proc/do_sink_or_float(buoyancy)
 	var/turf/open/swimmer_turf = src.loc
 	if (!istype(swimmer_turf, /turf/open) || (buoyancy == 0))
 		return
 
 	var/turf/turf_below = GET_TURF_BELOW(swimmer_turf)
-	if (buoyancy < 0 && swimmer_turf.allow_sinking && istype(turf_below, /turf/open))
+	if (buoyancy < 0 && istype(swimmer_turf, /turf/open/openspace) && istype(turf_below, /turf/open))
 		src.visible_message(
 			span_danger("[src] sinks like a stone!"),
 			span_userdanger("You feel yourself pulled to the bottom!")
@@ -52,7 +52,7 @@ var/list/flotation_gear = list(
 		return
 
 	var/turf/turf_above = GET_TURF_ABOVE(swimmer_turf)
-	if (buoyancy > 0 && istype(turf_above, /turf/open/openspace) && turf_above.liquids && !swimmer_turf.surface)
+	if (buoyancy > 0 && istype(turf_above, /turf/open/openspace) && turf_above.liquids)
 		src.visible_message(
 			span_danger("[src] shoots up toward the surface!"),
 			span_userdanger("You feel yourself pulled upward!")
@@ -69,42 +69,69 @@ var/list/flotation_gear = list(
 
 /turf/open/Enter(atom/movable/moving_object)
 	. = ..()
-	if(!src.liquids)
+	if (!src.liquids)
 		return
-	if(istype(moving_object, /mob/living/))
-		moving_object.update_buoyancy
-	var/turf_below = GET_TURF_BELOW(src)
-	if(moving_object.sinker)
-		if(src.allow_sinking && istype(turf_below, /turf/open))
-			moving_object.visible_message(
-				span_danger("[moving_object] sinks like a stone!"),
+
+	var/turf/turf_below = GET_TURF_BELOW(src)
+	var/liquid_offset = src.liquid_height - src.turf_height
+
+	// Handle /mob/living
+	if (istype(moving_object, /mob/living))
+		var/mob/living/living_mob = moving_object
+		living_mob.update_buoyancy()
+
+		// Sinking
+		if (living_mob.buyoancy < 0 && istype(src, /turf/open/openspace) && istype(turf_below, /turf/open))
+			living_mob.visible_message(
+				span_danger("[living_mob] sinks like a stone!"),
 				span_userdanger("You feel yourself pulled to the bottom!")
 			)
-			if(HAS_TRAIT(moving_object,TRAIT_MOVE_SWIMMING))
-				REMOVE_TRAIT(moving_object, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
-		return
+			if (HAS_TRAIT(living_mob, TRAIT_MOVE_SWIMMING))
+				REMOVE_TRAIT(living_mob, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
+			return
 
-	///can't swim on the surface of a tile with less than waist level water.
-	var/liquid_height_with_offset = src.liquid_height - src.turf_height
-	if(liquid_height_with_offset < LIQUID_STATE_WAIST)
-		return
+		// Not deep enough
+		if (liquid_offset < LIQUID_STATE_WAIST)
+			return
 
-	ADD_TRAIT(moving_object, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
-	moving_object.visible_message(
-				span_notice("[moving_object]starts to swim."),
+		// Handle flying override
+		if (HAS_TRAIT(living_mob, TRAIT_MOVE_FLYING))
+			if (src.liquid_height < LIQUID_STATE_FULLTILE)
+				return
+			if(istype(living_mob, /mob/living/carbon))
+				var/mob/living/carbon/maybe_winged = living_mob
+				if((maybe_winged.movement_type & FLYING) && !maybe_winged.buckled)
+					var/obj/item/organ/wings/functional/wings = maybe_winged.get_organ_slot(ORGAN_SLOT_EXTERNAL_WINGS)
+					if(wings)
+						wings.toggle_flight(maybe_winged)
+						wings.fly_slip(maybe_winged)
+					else
+						return
+
+		// Begin swimming
+		if(!HAS_TRAIT(living_mob, TRAIT_MOVE_SWIMMING))
+			ADD_TRAIT(living_mob, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
+			living_mob.visible_message(
+				span_notice("[living_mob] starts to swim."),
 				span_notice("You start to swim.")
 			)
 
-	if(istype(moving_object, /mob/living/carbon))
-		var/mob/living/carbon/carbon_object = moving_object
-		carbon_object.do_sink_or_float()
+		if (istype(living_mob, /mob/living/carbon))
+			var/mob/living/carbon/carbon_mob = living_mob
+			carbon_mob.do_sink_or_float()
+		return
+
+	// Handle non-mob/living buoyancy
+	if (ismovable(moving_object))
+		moving_object.do_sink_or_float()
 
 /turf/open/Exited(atom/movable/moving_away, direction)
 	. = ..()
 	if(!istype(moving_away, /mob/living/carbon))
 		return
-	update_buoyancy(moving_away)
-	if(!HAS_TRAIT(moving_away, TRAIT_MOVE_SWIMMING))
+	var/mob/living/carbon/carbon_leaver = moving_away
+	carbon_leaver.update_buoyancy()
+	if(!HAS_TRAIT(carbon_leaver, TRAIT_MOVE_SWIMMING))
 		return
 
 	if(src.liquids)
@@ -112,4 +139,4 @@ var/list/flotation_gear = list(
 		if(liquid_height_with_offset > LIQUID_STATE_WAIST)
 			return
 
-	REMOVE_TRAIT(moving_away, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
+	REMOVE_TRAIT(carbon_leaver, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))

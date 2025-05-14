@@ -691,6 +691,9 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 #define TRAIT_MOVE_FLOATING "move_floating"
 #define TRAIT_MOVE_PHASING "move_phasing"
 #define TRAIT_MOVE_UPSIDE_DOWN "move_upside_down"
+// NOVA EDIT ADDITION START - ADDING SWIMMING
+#define TRAIT_MOVE_SWIMMING "move_swimming"
+// NOVA EDIT ADDITION END
 /// Disables the floating animation. See above.
 #define TRAIT_NO_FLOATING_ANIM "no-floating-animation"
 

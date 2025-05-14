@@ -192,8 +192,11 @@ GLOBAL_LIST_INIT(bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 204
 #define PHASING (1<<4)
 /// The mob is walking on the ceiling. Or is generally just, upside down.
 #define UPSIDE_DOWN (1<<5)
+// NOVA EDIT ADDITION START - Adds swimming flag
+#define SWIMMING (1<<6)
+// NOVA EDIT ADDITION END
 /// Combination flag for movetypes which, for all intents and purposes, mean the mob is not touching the ground
-#define MOVETYPES_NOT_TOUCHING_GROUND (FLYING|FLOATING|UPSIDE_DOWN)
+#define MOVETYPES_NOT_TOUCHING_GROUND (FLYING|FLOATING|UPSIDE_DOWN|SWIMMING) // NOVA EDIT CHANGE - ORIGINAL: #define MOVETYPES_NOT_TOUCHING_GROUND (FLYING|FLOATING|UPSIDE_DOWN)
 /// Trait source for stuff movetypes applies
 #define SOURCE_MOVETYPES "movetypes"
 

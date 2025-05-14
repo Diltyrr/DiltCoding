@@ -12,13 +12,6 @@
 /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/bathypelagic
 	starting_temp = 277
 
-/turf/open
-	var/allow_sinking = FALSE
-	var/surface = FALSE //needed to determine when to stop flotation devices
-
-/turf/open/openspace
-	allow_sinking = TRUE
-
 /// Surface default tile, can Z_move through it.
 /turf/open/openspace/thalassostation/surface
 	alpha = 200
@@ -33,8 +26,7 @@
 	planetary_atmos = 1
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
 	turf_height = -30
-	liquid_height = LIQUID_SHOULDERS_LEVEL_HEIGHT-30
-	surface = TRUE
+	liquid_height = LIQUID_SHOULDERS_LEVEL_HEIGHT
 
 
 ///edited from modular_nova/module_liquids/code/ocean_turf.dm I need specific versions with different liquids, temp, and initialize logic. Overriding the ocean tile just gets messy.
@@ -65,6 +57,7 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/surface)
 	new_immmutable.mapload_turf(src)
+	AddElement(/datum/element/soft_landing)
 
 /turf/open/openspace/thalassostation/submerged/Initialize(mapload)
 	. = ..()
@@ -75,6 +68,7 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation)
 	new_immmutable.mapload_turf(src)
+	AddElement(/datum/element/soft_landing)
 
 /turf/open/misc/ironsand/thalassostation
 	planetary_atmos = TRUE
@@ -92,6 +86,7 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.mapload_turf(src)
+	AddElement(/datum/element/soft_landing)
 
 /turf/open/misc/thalassostation/rock
 	name = "rock"
@@ -112,6 +107,7 @@
 	base_icon_state = "seafloor_heavy"
 	baseturfs = /turf/open/misc/thalassostation/rock/heavy
 	liquid_type = /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/bathypelagic
+	initial_gas_mix = THALASSOSTATION_BATHYPELAGIC_ATMOS
 
 /turf/open/misc/thalassostation
 	gender = PLURAL
@@ -180,6 +176,7 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(liquid_type, src)
 	new_immmutable.mapload_turf(src)
+	AddElement(/datum/element/soft_landing)
 
 	if(rand_variants && prob(rand_chance))
 		var/random = rand(1,rand_variants)
@@ -201,6 +198,7 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.mapload_turf(src)
+	AddElement(/datum/element/soft_landing)
 
 /turf/open/floor/iron/thalassostation
 	planetary_atmos = TRUE
@@ -217,6 +215,7 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.mapload_turf(src)
+	AddElement(/datum/element/soft_landing)
 
 /turf/open/floor/glass/reinforced/thalassosation
 	planetary_atmos = TRUE
@@ -233,6 +232,7 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.mapload_turf(src)
+	AddElement(/datum/element/soft_landing)
 
 /turf/closed/mineral/random/thalassosation
 	baseturfs = /turf/open/misc/thalassostation/rock/heavy
@@ -243,6 +243,7 @@
 	baseturfs = /turf/open/misc/thalassostation/rock/heavy
 	turf_type = /turf/open/misc/thalassostation/rock/heavy
 	color = "#58606b"
+	initial_gas_mix = THALASSOSTATION_BATHYPELAGIC_ATMOS
 
 /turf/closed/mineral/random/low_chance/thalassosation
 	baseturfs = /turf/open/misc/thalassostation/rock/heavy
