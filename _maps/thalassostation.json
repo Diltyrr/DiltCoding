@@ -33,7 +33,7 @@
 			"Down": true,
 			"Linkage": null,
 			"Gravity": true,
-			"Baseturf": "/turf/open/openspace/thalassostation/submerged"
+			"Baseturf": "/turf/open/openspace/thalassostation_submerged"
 		},
 		{
 			"Down": true,

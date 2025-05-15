@@ -1,7 +1,7 @@
 /datum/map_generator/cave_generator/panthalassic_mid_generator
 
 	weighted_open_turf_types = list(
-		/turf/open/openspace/thalassostation/submerged = 1
+		/turf/open/openspace/thalassostation_submerged = 1
 	)
 
 	weighted_closed_turf_types = list(

@@ -30,15 +30,15 @@
 
 
 ///edited from modular_nova/module_liquids/code/ocean_turf.dm I need specific versions with different liquids, temp, and initialize logic. Overriding the ocean tile just gets messy.
-/turf/open/openspace/thalassostation/submerged
+/turf/open/openspace/thalassostation_submerged
 	name = "ocean"
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
 	planetary_atmos = TRUE
-	baseturfs = /turf/open/openspace/thalassostation/submerged
+	baseturfs = /turf/open/openspace/thalassostation_submerged
 	var/replacement_turf = /turf/open/misc/thalassostation
 	liquid_height = LIQUID_HEIGHT_CONSIDER_FULL_TILE
 
-/turf/open/openspace/thalassostation/submerged/LateInitialize()
+/turf/open/openspace/thalassostation_submerged/LateInitialize()
 	. = ..()
 	var/turf/turfbelow = GET_TURF_BELOW(src)
 	if(isclosedturf(turfbelow))
@@ -57,9 +57,8 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/surface)
 	new_immmutable.mapload_turf(src)
-	AddElement(/datum/element/soft_landing)
 
-/turf/open/openspace/thalassostation/submerged/Initialize(mapload)
+/turf/open/openspace/thalassostation_submerged/Initialize(mapload)
 	. = ..()
 	if(liquids)
 		if(liquids.immutable)
@@ -68,7 +67,6 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation)
 	new_immmutable.mapload_turf(src)
-	AddElement(/datum/element/soft_landing)
 
 /turf/open/misc/ironsand/thalassostation
 	planetary_atmos = TRUE
@@ -86,7 +84,6 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.mapload_turf(src)
-	AddElement(/datum/element/soft_landing)
 
 /turf/open/misc/thalassostation/rock
 	name = "rock"
@@ -113,7 +110,7 @@
 	gender = PLURAL
 	name = "ocean sand"
 	desc = "If you can't escape sandstorms underwater, is anywhere safe?"
-	baseturfs = /turf/open/openspace/thalassostation/submerged
+	baseturfs = /turf/open/openspace/thalassostation_submerged
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "asteroid"
 	base_icon_state = "asteroid"
@@ -127,15 +124,6 @@
 	var/rand_chance = 30
 	var/liquid_type = /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation
 	liquid_height = LIQUID_HEIGHT_CONSIDER_FULL_TILE
-
-/turf/open/Initialize()
-	. = ..()
-	var/turf/above = GET_TURF_ABOVE(src)
-
-	// Check if the above turf has a liquid, the current turf is not openspace, and the above turf is openspace
-	if(above && istype(above, /turf/open/openspace) && above.liquids && !istype(src, /turf/open/openspace))
-		new /obj/effect/overlay/lightrays(src)  // Create the lightray effect on this turf
-
 
 ///when we cover a lightray, it should vanish.
 /turf/open/openspace/ChangeTurf(path, list/new_baseturfs, flags)
@@ -166,18 +154,27 @@
 /turf/open/misc/thalassostation/bottom
 	baseturfs = /turf/open/misc/thalassostation/bottom
 
+/turf/open/LateInitialize()
+	. = ..()
+	if(istype(src, /turf/open/openspace) || istype(src, /turf/closed))
+		return
+	if(src.liquid_height > LIQUID_SHOULDERS_LEVEL_HEIGHT)
+		AddElement(/datum/element/soft_landing)
+	var/turf/above = GET_TURF_ABOVE(src)
+	// Check if the above turf has a liquid, the current turf is not openspace, and the above turf is openspace
+	if(above && istype(above, /turf/open/openspace) && above.liquids && !istype(src, /turf/open/openspace))
+		new /obj/effect/overlay/lightrays(src)  // Create the lightray effect on this turf
+
+/turf/open/liquids_change(new_state)
+	. = ..()
+	if(src.liquid_height >= LIQUID_SHOULDERS_LEVEL_HEIGHT)
+		AddElement(/datum/element/soft_landing)
+	if(src.liquid_height < LIQUID_SHOULDERS_LEVEL_HEIGHT)
+		RemoveElement(/datum/element/soft_landing)
+
 
 /turf/open/misc/thalassostation/Initialize(mapload)
 	. = ..()
-	if(liquids)
-		if(liquids.immutable)
-			liquids.remove_turf(src)
-		else
-			qdel(liquids, TRUE)
-	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(liquid_type, src)
-	new_immmutable.mapload_turf(src)
-	AddElement(/datum/element/soft_landing)
-
 	if(rand_variants && prob(rand_chance))
 		var/random = rand(1,rand_variants)
 		icon_state = "[icon_state][random]"
@@ -198,7 +195,6 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.mapload_turf(src)
-	AddElement(/datum/element/soft_landing)
 
 /turf/open/floor/iron/thalassostation
 	planetary_atmos = TRUE
@@ -215,13 +211,22 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.mapload_turf(src)
-	AddElement(/datum/element/soft_landing)
 
 /turf/open/floor/glass/reinforced/thalassosation
 	planetary_atmos = TRUE
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
 	baseturfs = /turf/open/floor/plating/thalassostation_plating
 	liquid_height = LIQUID_HEIGHT_CONSIDER_FULL_TILE
+
+/turf/open/misc/thalassostation/Initialize(mapload)
+	. = ..()
+	if(liquids)
+		if(liquids.immutable)
+			liquids.remove_turf(src)
+		else
+			qdel(liquids, TRUE)
+	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(liquid_type, src)
+	new_immmutable.mapload_turf(src)
 
 /turf/open/floor/glass/reinforced/thalassostation/Initialize(mapload)
 	. = ..()
@@ -232,7 +237,7 @@
 			qdel(liquids, TRUE)
 	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.mapload_turf(src)
-	AddElement(/datum/element/soft_landing)
+
 
 /turf/closed/mineral/random/thalassosation
 	baseturfs = /turf/open/misc/thalassostation/rock/heavy
@@ -251,7 +256,7 @@
 	color = "#58606b"
 
 /turf/closed/mineral/random/stationside/thalassosation
-	baseturfs = /turf/open/openspace/thalassostation/submerged
+	baseturfs = /turf/open/openspace/thalassostation_submerged
 	turf_type = /turf/open/misc/thalassostation/rock/heavy
 	color = "#58606b"
 
@@ -266,7 +271,7 @@
 	if (istype(turf_above, /turf/open/misc/thalassostation))
 		for(var/obj/effect/overlay/lightrays/L in turf_above.contents)
 			qdel(L)
-		turf_above.ChangeTurf(/turf/open/openspace/thalassostation/submerged)
+		turf_above.ChangeTurf(/turf/open/openspace/thalassostation_submerged)
 
 /// we want mapchanges to cause flooding immediatly.
 /turf/closed/ChangeTurf(path, list/new_baseturfs, flags)
