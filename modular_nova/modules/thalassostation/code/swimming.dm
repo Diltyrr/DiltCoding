@@ -1,3 +1,6 @@
+/area/
+	var/cap_turf = null
+
 /// Items that have neutral buyoancy
 var/list/heavy_gear = list(
 	/obj/item/clothing/shoes/magboots
@@ -58,6 +61,12 @@ var/list/flotation_gear = list(
 			span_userdanger("You feel yourself pulled upward!")
 		)
 		src.forceMove(turf_above)
+	if (buoyancy > 0 && istype(turf_above, /turf/open/ocean_surface/))
+		src.visible_message(
+			span_danger("[src] shoots up toward the surface!"),
+			span_userdanger("You feel yourself pulled upward!")
+		)
+		src.forceMove(turf_above)
 
 /obj/item/equipped(mob/user, slot, initial)
 	. = ..()
@@ -69,74 +78,88 @@ var/list/flotation_gear = list(
 
 /turf/open/Enter(atom/movable/moving_object)
 	. = ..()
-	if (!src.liquids)
+	if (!istype(moving_object, /mob/living))
 		return
-
+	var/mob/living/L = moving_object
+	if (!src.liquids && !istype(src, /turf/open/ocean_surface/))
+		if (HAS_TRAIT(L, TRAIT_MOVE_SWIMMING))
+			REMOVE_TRAIT(L, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
+			L.visible_message(
+				span_notice("[L] stops swimming."),
+				span_notice("You stop to swim.")
+			)
+		return
 	var/turf/turf_below = GET_TURF_BELOW(src)
 	var/liquid_offset = src.liquid_height - src.turf_height
-
-	// Handle /mob/living
-	if (istype(moving_object, /mob/living))
-		var/mob/living/living_mob = moving_object
-		living_mob.update_buoyancy()
-
-		// Sinking
-		if (living_mob.buyoancy < 0 && istype(src, /turf/open/openspace) && istype(turf_below, /turf/open))
-			living_mob.visible_message(
-				span_danger("[living_mob] sinks like a stone!"),
-				span_userdanger("You feel yourself pulled to the bottom!")
-			)
-			if (HAS_TRAIT(living_mob, TRAIT_MOVE_SWIMMING))
-				REMOVE_TRAIT(living_mob, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
-			return
-
-		// Not deep enough
-		if (liquid_offset < LIQUID_STATE_WAIST)
-			return
-
-		// Handle flying override
-		if (HAS_TRAIT(living_mob, TRAIT_MOVE_FLYING))
-			if (src.liquid_height < LIQUID_STATE_FULLTILE)
-				return
-			if(istype(living_mob, /mob/living/carbon))
-				var/mob/living/carbon/maybe_winged = living_mob
-				if((maybe_winged.movement_type & FLYING) && !maybe_winged.buckled)
-					var/obj/item/organ/wings/functional/wings = maybe_winged.get_organ_slot(ORGAN_SLOT_EXTERNAL_WINGS)
-					if(wings)
-						wings.toggle_flight(maybe_winged)
-						wings.fly_slip(maybe_winged)
-					else
-						return
+	L.update_buoyancy()
+	// Handle sinking immediately
+	if (L.buyoancy < 0 && istype(turf_below, /turf/open))
+		L.visible_message(
+			span_danger("[L] sinks like a stone!"),
+			span_userdanger("You feel yourself pulled to the bottom!")
+		)
+		if (HAS_TRAIT(L, TRAIT_MOVE_SWIMMING))
+			REMOVE_TRAIT(L, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
+		return
+	// Not deep enough to swim
+	if (liquid_offset < LIQUID_STATE_WAIST && !istype(src, /turf/open/ocean_surface/))
+		return
+	// Handle flight interruption
+	if (HAS_TRAIT(L, TRAIT_MOVE_FLYING) && src.liquid_height >= LIQUID_STATE_FULLTILE)
+		if (istype(L, /mob/living/carbon))
+			var/mob/living/carbon/C = L
+			if ((C.movement_type & FLYING) && !C.buckled)
+				var/obj/item/organ/wings/functional/W = C.get_organ_slot(ORGAN_SLOT_EXTERNAL_WINGS)
+				if (W)
+					W.toggle_flight(C)
+					W.fly_slip(C)
+				else
+					return
 
 		// Begin swimming
-		if(!HAS_TRAIT(living_mob, TRAIT_MOVE_SWIMMING))
-			ADD_TRAIT(living_mob, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
-			living_mob.visible_message(
-				span_notice("[living_mob] starts to swim."),
+		if (!HAS_TRAIT(L, TRAIT_MOVE_SWIMMING))
+			ADD_TRAIT(L, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
+			L.visible_message(
+				span_notice("[L] starts to swim."),
 				span_notice("You start to swim.")
 			)
 
-		if (istype(living_mob, /mob/living/carbon))
-			var/mob/living/carbon/carbon_mob = living_mob
-			carbon_mob.do_sink_or_float()
+		if (istype(L, /mob/living/carbon))
+			var/mob/living/carbon/C = L
+			C.do_sink_or_float()
 		return
 
-	// Handle non-mob/living buoyancy
+	// Non-living movable
 	if (ismovable(moving_object))
 		moving_object.do_sink_or_float()
 
-/turf/open/Exited(atom/movable/moving_away, direction)
+/// Submerged openspace with a closed turf below should be visually capped by a floor turf.
+/// Requires the area to define a `cap_turf` var (typepath) for this behavior to activate.
+/turf/open/openspace/LateInitialize()
 	. = ..()
-	if(!istype(moving_away, /mob/living/carbon))
+	if (!src.liquids)
 		return
-	var/mob/living/carbon/carbon_leaver = moving_away
-	carbon_leaver.update_buoyancy()
-	if(!HAS_TRAIT(carbon_leaver, TRAIT_MOVE_SWIMMING))
+	var/area/current_area = get_area(src)
+	if (current_area.cap_turf)
+		var/turf/turf_below = GET_TURF_BELOW(src)
+		if (istype(turf_below, /turf/closed/mineral))
+			ChangeTurf(current_area.cap_turf, null, CHANGETURF_IGNORE_AIR)
+
+
+/// If the turf above is a visual cap_turf placed over openspace, remove it.
+/turf/closed/mineral/gets_drilled()
+	. = ..()
+	var/turf/turf_above = GET_TURF_ABOVE(src)
+	if (!turf_above)
 		return
 
-	if(src.liquids)
-		var/liquid_height_with_offset = src.liquid_height - src.turf_height
-		if(liquid_height_with_offset > LIQUID_STATE_WAIST)
-			return
+	var/area/current_area = get_area(turf_above)
+	if (current_area.cap_turf && istype(turf_above, current_area.cap_turf))
+		qdel(turf_above)
 
-	REMOVE_TRAIT(carbon_leaver, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
+/// Stops rain overlay from forming over the surface of the ocean.
+/datum/weather/can_weather_act_turf(turf/valid_weather_turf)
+	. = ..()
+	if (istype(valid_weather_turf, /turf/open/misc/beach/coast) || istype(valid_weather_turf, /turf/open/ocean_surface))
+		return FALSE
+	return ..()

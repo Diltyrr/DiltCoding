@@ -1,16 +1,36 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
 "a" = (
-/turf/open/openspace/thalassostation/surface,
-/area/panthalassic)
+/turf/open/ocean_surface/thalassostation,
+/area/panthalassic/surface)
 "c" = (
 /turf/open/genturf,
 /area/panthalassic/middle)
+"l" = (
+/obj/effect/landmark/observer_start,
+/turf/open/misc/beach/sand/thalassostation,
+/area/panthalassic/surface)
+"p" = (
+/turf/open/misc/beach/coast/thalassostation,
+/area/panthalassic/surface)
+"z" = (
+/turf/open/misc/beach/coast/thalassostation{
+	dir = 6
+	},
+/area/panthalassic/surface)
 "E" = (
 /turf/open/genturf,
 /area/panthalassic/floor)
 "G" = (
 /turf/open/genturf,
 /area/panthalassic/bathypelagic)
+"K" = (
+/turf/open/misc/beach/sand/thalassostation,
+/area/panthalassic/surface)
+"N" = (
+/turf/open/misc/beach/coast/thalassostation{
+	dir = 4
+	},
+/area/panthalassic/surface)
 
 (1,1,1) = {"
 G
@@ -196621,10 +196641,10 @@ c
 "}
 
 (1,1,4) = {"
-a
-a
-a
-a
+K
+K
+K
+p
 a
 a
 a
@@ -196878,10 +196898,10 @@ a
 a
 "}
 (2,1,4) = {"
-a
-a
-a
-a
+K
+K
+K
+p
 a
 a
 a
@@ -197135,10 +197155,10 @@ a
 a
 "}
 (3,1,4) = {"
-a
-a
-a
-a
+K
+l
+K
+p
 a
 a
 a
@@ -197392,10 +197412,10 @@ a
 a
 "}
 (4,1,4) = {"
-a
-a
-a
-a
+K
+K
+K
+p
 a
 a
 a
@@ -197649,10 +197669,10 @@ a
 a
 "}
 (5,1,4) = {"
-a
-a
-a
-a
+K
+K
+K
+p
 a
 a
 a
@@ -197906,10 +197926,10 @@ a
 a
 "}
 (6,1,4) = {"
-a
-a
-a
-a
+N
+N
+N
+z
 a
 a
 a
