@@ -1,3 +1,5 @@
+#define SWIM_TRAIT_ELEMENT_ID "swimming"
+
 /area/
 	var/cap_turf = null
 
@@ -51,7 +53,7 @@ var/list/flotation_gear = list(
 			span_userdanger("You feel yourself pulled to the bottom!")
 		)
 		if (HAS_TRAIT(src, TRAIT_MOVE_SWIMMING))
-			REMOVE_TRAIT(src, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(/mob/living))
+			REMOVE_TRAIT(src, TRAIT_MOVE_SWIMMING, SWIM_TRAIT_ELEMENT_ID)
 		return
 
 	var/turf/turf_above = GET_TURF_ABOVE(swimmer_turf)
@@ -83,7 +85,7 @@ var/list/flotation_gear = list(
 	var/mob/living/L = moving_object
 	if (!src.liquids && !istype(src, /turf/open/ocean_surface/))
 		if (HAS_TRAIT(L, TRAIT_MOVE_SWIMMING))
-			REMOVE_TRAIT(L, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
+			REMOVE_TRAIT(L, TRAIT_MOVE_SWIMMING, SWIM_TRAIT_ELEMENT_ID)
 			L.visible_message(
 				span_notice("[L] stops swimming."),
 				span_notice("You stop to swim.")
@@ -99,7 +101,7 @@ var/list/flotation_gear = list(
 			span_userdanger("You feel yourself pulled to the bottom!")
 		)
 		if (HAS_TRAIT(L, TRAIT_MOVE_SWIMMING))
-			REMOVE_TRAIT(L, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
+			REMOVE_TRAIT(L, TRAIT_MOVE_SWIMMING, SWIM_TRAIT_ELEMENT_ID)
 		return
 	// Not deep enough to swim
 	if (liquid_offset < LIQUID_STATE_WAIST && !istype(src, /turf/open/ocean_surface/))
@@ -116,13 +118,13 @@ var/list/flotation_gear = list(
 				else
 					return
 
-		// Begin swimming
-		if (!HAS_TRAIT(L, TRAIT_MOVE_SWIMMING))
-			ADD_TRAIT(L, TRAIT_MOVE_SWIMMING, ELEMENT_TRAIT(type))
-			L.visible_message(
-				span_notice("[L] starts to swim."),
-				span_notice("You start to swim.")
-			)
+	// Begin swimming
+	if (!HAS_TRAIT(L, TRAIT_MOVE_SWIMMING))
+		ADD_TRAIT(L, TRAIT_MOVE_SWIMMING, SWIM_TRAIT_ELEMENT_ID)
+		L.visible_message(
+			span_notice("[L] starts to swim."),
+			span_notice("You start to swim.")
+		)
 
 		if (istype(L, /mob/living/carbon))
 			var/mob/living/carbon/C = L
@@ -147,12 +149,17 @@ var/list/flotation_gear = list(
 
 
 /// If the turf above is a visual cap_turf placed over openspace, remove it.
-/turf/closed/mineral/gets_drilled()
+/turf/closed/ChangeTurf(path, list/new_baseturfs, flags)
 	. = ..()
+
 	var/turf/turf_above = GET_TURF_ABOVE(src)
 	if (!turf_above)
 		return
 
+	if (istype(turf_above, /turf/open/ocean_surface))
+		turf_above.icon_state = "deepwater"
+
+	// Check for replacement logic
 	var/area/current_area = get_area(turf_above)
 	if (current_area.cap_turf && istype(turf_above, current_area.cap_turf))
 		qdel(turf_above)

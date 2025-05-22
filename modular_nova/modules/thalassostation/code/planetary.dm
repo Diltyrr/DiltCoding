@@ -4,19 +4,19 @@
 	id = THALASSOSTATION_DEFAULT_ATMOS
 
 	base_gases = list(
-		/datum/gas/oxygen=20,
-		/datum/gas/nitrogen=10,
+		/datum/gas/oxygen=210
 	)
 	normal_gases = list(
-		/datum/gas/oxygen=10,
-		/datum/gas/nitrogen=10,
+		/datum/gas/oxygen=21,
+		/datum/gas/nitrogen=70,
 	)
 	restricted_gases = list(
+		/datum/gas/water_vapor=2
 	)
 	restricted_chance = 20
 
-	minimum_pressure = WARNING_LOW_PRESSURE + 200
-	maximum_pressure = WARNING_HIGH_PRESSURE -200
+	minimum_pressure = ONE_ATMOSPHERE
+	maximum_pressure = ONE_ATMOSPHERE
 
 	minimum_temp = THALASSOSTATION_MIN_TEMPERATURE
 	maximum_temp = THALASSOSTATION_MAX_TEMPERATURE
@@ -29,8 +29,8 @@
 
 	// simulating underwater depth by adding to atmo pressure (should probably be reworked if one day gases and liquid are both counted as "atmo")
 
-	minimum_pressure = (WARNING_LOW_PRESSURE + 200) * 100
-	maximum_pressure = (WARNING_LOW_PRESSURE + 200) * 400
+	minimum_pressure = ONE_ATMOSPHERE * 100
+	maximum_pressure = ONE_ATMOSPHERE * 400
 
 	//temperature in the mining level is a constant 4°c
 

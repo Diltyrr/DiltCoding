@@ -324,11 +324,17 @@
 	alpha = 255
 	base_icon_state = "water"
 	canSmoothWith = "0,4,"
-	color = "#888888"
 	icon = 'icons/turf/beach.dmi'
-	icon_state = "water"
+	icon_state = "deepwater"
 	name = "open ocean surface"
 	planetary_atmos = 1
+
+/turf/open/ocean_surface/Initialize()
+	. = ..()
+	var/turf/turf_below = GET_TURF_BELOW(src)
+	// If the turf below is solid, show shallower visuals
+	if (istype(turf_below, /turf/closed))
+		src.icon_state = "water"
 
 /turf/open/ocean_surface/zPassIn(direction)
 	if(direction == DOWN)
