@@ -5,16 +5,16 @@
 
 	base_gases = list(
 		/datum/gas/oxygen=210,
-		/datum/gas/nitrogen=700,
+		/datum/gas/nitrogen=10,
 	)
 	normal_gases = list(
 		/datum/gas/oxygen=10,
 		/datum/gas/nitrogen=10,
+		/datum/gas/water_vapor=0.2,
 	)
 	restricted_gases = list(
-		/datum/gas/water_vapor=0.1,
 	)
-	restricted_chance = 20
+	restricted_chance = 0
 
 	minimum_pressure = ONE_ATMOSPHERE
 	maximum_pressure = ONE_ATMOSPHERE

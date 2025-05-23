@@ -360,32 +360,33 @@
 	if(direction == UP)
 		return FALSE
 
-/obj/effect/overlay/ocean_surface/ocean_surface
+/obj/effect/overlay/ocean_surface/
 	name = "ocean_surface"
 	icon = 'modular_nova/modules/thalassostation/icons/surface_overlay.dmi'
 	icon_state = "deepwater"
 	density = FALSE
-	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	anchored = TRUE
-	layer = ABOVE_MOB_LAYER
-	alpha = 140
+	appearance_flags = RESET_TRANSFORM|RESET_COLOR|RESET_ALPHA|KEEP_TOGETHER
+	vis_flags = VIS_INHERIT_PLANE|VIS_INHERIT_ID
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	blend_mode = BLEND_INSET_OVERLAY
+	layer = WATER_VISUAL_OVERLAY_LAYER
+	plane = FLOAT_PLANE
 
-/obj/effect/overlay/ocean_surface/ocean_surface/shallow
+/obj/effect/overlay/ocean_surface/shallow
 	icon_state = "water"
 
 /turf/open/water/ocean_surface/Entered(atom/movable/arrived)
 	. = ..()
 
 	if (src.icon_state == "water")
-		var/obj/effect/overlay/ocean_surface/ocean_surface/shallow/ocean_surface = new()
-		SET_PLANE(ocean_surface, PLANE_TO_TRUE(ocean_surface.plane), src)
-		arrived.vis_contents += ocean_surface
+		var/obj/effect/overlay/ocean_surface/shallow/shallow_surface = new()
+		arrived.vis_contents += shallow_surface
 		return
 
 	if (src.icon_state == "deepwater")
-		var/obj/effect/overlay/ocean_surface/ocean_surface = new()
-		SET_PLANE(ocean_surface, PLANE_TO_TRUE(ocean_surface.plane), src)
-		arrived.vis_contents += ocean_surface
+		var/obj/effect/overlay/ocean_surface/deep_surface = new()
+		arrived.vis_contents += deep_surface
 		return
 
 /turf/open/water/ocean_surface/Exit(atom/movable/leaving, direction)
@@ -394,3 +395,11 @@
 	for (var/atom/A in leaving.vis_contents)
 		if (A.name == "ocean_surface")
 			qdel(A)
+
+/turf/open/misc/beach/water_vapor_gas_act()
+	. = ..()
+	src.clearWet()
+
+/turf/open/water/water_vapor_gas_act()
+	. = ..()
+	src.clearWet()
