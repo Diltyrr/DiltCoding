@@ -4,14 +4,15 @@
 	id = THALASSOSTATION_DEFAULT_ATMOS
 
 	base_gases = list(
-		/datum/gas/oxygen=210
+		/datum/gas/oxygen=5,
+		/datum/gas/nitrogen=10,
 	)
 	normal_gases = list(
-		/datum/gas/oxygen=21,
-		/datum/gas/nitrogen=70,
+		/datum/gas/oxygen=10,
+		/datum/gas/nitrogen=10,
 	)
 	restricted_gases = list(
-		/datum/gas/water_vapor=2
+		/datum/gas/water_vapor=0.1,
 	)
 	restricted_chance = 20
 
@@ -36,5 +37,3 @@
 
 	minimum_temp = 277
 	maximum_temp = 277
-
-/datum/weather/rain_storm/thalassostation

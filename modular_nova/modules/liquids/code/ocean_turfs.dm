@@ -331,6 +331,7 @@
 
 /turf/open/ocean_surface/Initialize()
 	. = ..()
+	AddElement(/datum/element/watery_tile)
 	var/turf/turf_below = GET_TURF_BELOW(src)
 	// If the turf below is solid, show shallower visuals
 	if (istype(turf_below, /turf/closed))
