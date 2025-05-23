@@ -320,7 +320,7 @@
 	name = "submarine wall"
 
 /// Swimmable surface, can Z_Move through.
-/turf/open/ocean_surface
+/turf/open/water/ocean_surface
 	alpha = 255
 	base_icon_state = "water"
 	canSmoothWith = "0,4,"
@@ -328,16 +328,17 @@
 	icon_state = "deepwater"
 	name = "open ocean surface"
 	planetary_atmos = 1
+	fishing_datum = /datum/fish_source/ocean
 
-/turf/open/ocean_surface/Initialize()
+/turf/open/water/ocean_surface/Initialize()
 	. = ..()
-	AddElement(/datum/element/watery_tile)
 	var/turf/turf_below = GET_TURF_BELOW(src)
 	// If the turf below is solid, show shallower visuals
 	if (istype(turf_below, /turf/closed))
 		src.icon_state = "water"
+		src.fishing_datum = /datum/fish_source/ocean/beach
 
-/turf/open/ocean_surface/zPassIn(direction)
+/turf/open/water/ocean_surface/zPassIn(direction)
 	if(direction == DOWN)
 		for(var/obj/contained_object in contents)
 			if(contained_object.obj_flags & BLOCK_Z_IN_DOWN)
@@ -350,7 +351,7 @@
 		return TRUE
 	return FALSE
 
-/turf/open/ocean_surface/zPassOut(direction)
+/turf/open/water/ocean_surface/zPassOut(direction)
 	if(direction == DOWN)
 		for(var/obj/contained_object in contents)
 			if(contained_object.obj_flags & BLOCK_Z_OUT_DOWN)
@@ -359,7 +360,37 @@
 	if(direction == UP)
 		return FALSE
 
-/turf/open/ocean_surface/Enter(atom/movable/moving_object)
+/obj/effect/overlay/ocean_surface/ocean_surface
+	name = "ocean_surface"
+	icon = 'modular_nova/modules/thalassostation/icons/surface_overlay.dmi'
+	icon_state = "deepwater"
+	density = FALSE
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	anchored = TRUE
+	layer = ABOVE_MOB_LAYER
+	alpha = 140
+
+/obj/effect/overlay/ocean_surface/ocean_surface/shallow
+	icon_state = "water"
+
+/turf/open/water/ocean_surface/Entered(atom/movable/arrived)
 	. = ..()
-	if(.)
-		moving_object.set_currently_z_moving(CURRENTLY_Z_FALLING_FROM_MOVE)
+
+	if (src.icon_state == "water")
+		var/obj/effect/overlay/ocean_surface/ocean_surface/shallow/ocean_surface = new()
+		SET_PLANE(ocean_surface, PLANE_TO_TRUE(ocean_surface.plane), src)
+		arrived.vis_contents += ocean_surface
+		return
+
+	if (src.icon_state == "deepwater")
+		var/obj/effect/overlay/ocean_surface/ocean_surface = new()
+		SET_PLANE(ocean_surface, PLANE_TO_TRUE(ocean_surface.plane), src)
+		arrived.vis_contents += ocean_surface
+		return
+
+/turf/open/water/ocean_surface/Exit(atom/movable/leaving, direction)
+	. = ..()
+
+	for (var/atom/A in leaving.vis_contents)
+		if (A.name == "ocean_surface")
+			qdel(A)

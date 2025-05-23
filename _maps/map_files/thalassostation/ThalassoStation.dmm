@@ -1,6 +1,6 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
 "a" = (
-/turf/open/ocean_surface/thalassostation,
+/turf/open/water/ocean_surface/thalassostation,
 /area/panthalassic/surface)
 "c" = (
 /turf/open/genturf,

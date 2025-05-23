@@ -13,7 +13,7 @@
 	starting_temp = 277
 
 /// Surface default tile, can Z_move through it.
-/turf/open/ocean_surface/thalassostation
+/turf/open/water/ocean_surface/thalassostation
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
 
 

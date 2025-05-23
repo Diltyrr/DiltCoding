@@ -39,7 +39,7 @@
 			"Down": true,
 			"Linkage": null,
 			"Gravity": true,
-			"Baseturf": "/turf/open/ocean_surface/thalassostation",
+			"Baseturf": "/turf/open/water/ocean_surface/thalassostation",
 			"Weather_Rainstorm": true
 		}
 	],

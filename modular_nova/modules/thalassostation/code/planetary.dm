@@ -4,8 +4,8 @@
 	id = THALASSOSTATION_DEFAULT_ATMOS
 
 	base_gases = list(
-		/datum/gas/oxygen=5,
-		/datum/gas/nitrogen=10,
+		/datum/gas/oxygen=210,
+		/datum/gas/nitrogen=700,
 	)
 	normal_gases = list(
 		/datum/gas/oxygen=10,

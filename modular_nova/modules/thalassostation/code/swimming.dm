@@ -63,7 +63,7 @@ var/list/flotation_gear = list(
 			span_userdanger("You feel yourself pulled upward!")
 		)
 		src.forceMove(turf_above)
-	if (buoyancy > 0 && istype(turf_above, /turf/open/ocean_surface/))
+	if (buoyancy > 0 && istype(turf_above, /turf/open/water/ocean_surface/))
 		src.visible_message(
 			span_danger("[src] shoots up toward the surface!"),
 			span_userdanger("You feel yourself pulled upward!")
@@ -83,7 +83,7 @@ var/list/flotation_gear = list(
 	if (!istype(moving_object, /mob/living))
 		return
 	var/mob/living/L = moving_object
-	if (!src.liquids && !istype(src, /turf/open/ocean_surface/))
+	if (!src.liquids && !istype(src, /turf/open/water/ocean_surface/))
 		if (HAS_TRAIT(L, TRAIT_MOVE_SWIMMING))
 			REMOVE_TRAIT(L, TRAIT_MOVE_SWIMMING, SWIM_TRAIT_ELEMENT_ID)
 			L.visible_message(
@@ -104,7 +104,7 @@ var/list/flotation_gear = list(
 			REMOVE_TRAIT(L, TRAIT_MOVE_SWIMMING, SWIM_TRAIT_ELEMENT_ID)
 		return
 	// Not deep enough to swim
-	if (liquid_offset < LIQUID_STATE_WAIST && !istype(src, /turf/open/ocean_surface/))
+	if (liquid_offset < LIQUID_STATE_WAIST && !istype(src, /turf/open/water/ocean_surface/))
 		return
 	// Handle flight interruption
 	if (HAS_TRAIT(L, TRAIT_MOVE_FLYING) && src.liquid_height >= LIQUID_STATE_FULLTILE)
@@ -156,8 +156,10 @@ var/list/flotation_gear = list(
 	if (!turf_above)
 		return
 
-	if (istype(turf_above, /turf/open/ocean_surface))
-		turf_above.icon_state = "deepwater"
+	if (istype(turf_above, /turf/open/water/ocean_surface))
+		var/turf/open/water/ocean_surface/surface_above
+		surface_above.icon_state = "deepwater"
+		surface_above.fishing_datum = /datum/fish_source/ocean/
 
 	// Check for replacement logic
 	var/area/current_area = get_area(turf_above)
@@ -167,6 +169,6 @@ var/list/flotation_gear = list(
 /// Stops rain overlay from forming over the surface of the ocean.
 /datum/weather/can_weather_act_turf(turf/valid_weather_turf)
 	. = ..()
-	if (istype(valid_weather_turf, /turf/open/misc/beach/coast) || istype(valid_weather_turf, /turf/open/ocean_surface))
+	if (istype(valid_weather_turf, /turf/open/misc/beach/coast) || istype(valid_weather_turf, /turf/open/water/ocean_surface))
 		return FALSE
 	return ..()
