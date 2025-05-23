@@ -398,8 +398,8 @@
 
 /turf/open/misc/beach/water_vapor_gas_act()
 	. = ..()
-	src.clearWet()
+	src.ClearWet()
 
 /turf/open/water/water_vapor_gas_act()
 	. = ..()
-	src.clearWet()
+	src.ClearWet()

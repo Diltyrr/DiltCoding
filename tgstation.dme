@@ -9005,7 +9005,6 @@
 #include "modular_nova\modules\thalassostation\code\misc.dm"
 #include "modular_nova\modules\thalassostation\code\panthalassic_areas.dm"
 #include "modular_nova\modules\thalassostation\code\panthalassic_mapgen.dm"
-#include "modular_nova\modules\thalassostation\code\planetary.dm"
 #include "modular_nova\modules\thalassostation\code\swimming.dm"
 #include "modular_nova\modules\thalassostation\code\thalassostation_structures.dm"
 #include "modular_nova\modules\thalassostation\code\thalassostation_tiles.dm"

@@ -78,11 +78,11 @@ var/list/flotation_gear = list(
 	var/mob/living/equipper = user
 	equipper.update_buoyancy()
 
-/turf/open/Enter(atom/movable/moving_object)
+/turf/open/Entered(atom/movable/arrived, atom/old_loc, list/atom/old_locs)
 	. = ..()
-	if (!istype(moving_object, /mob/living))
+	if (!istype(arrived, /mob/living))
 		return
-	var/mob/living/L = moving_object
+	var/mob/living/L = arrived
 	if (!src.liquids && !istype(src, /turf/open/water/ocean_surface/))
 		if (HAS_TRAIT(L, TRAIT_MOVE_SWIMMING))
 			REMOVE_TRAIT(L, TRAIT_MOVE_SWIMMING, SWIM_TRAIT_ELEMENT_ID)
@@ -132,8 +132,8 @@ var/list/flotation_gear = list(
 		return
 
 	// Non-living movable
-	if (ismovable(moving_object))
-		moving_object.do_sink_or_float()
+	if (ismovable(arrived))
+		arrived.do_sink_or_float()
 
 /// Submerged openspace with a closed turf below should be visually capped by a floor turf.
 /// Requires the area to define a `cap_turf` var (typepath) for this behavior to activate.
@@ -166,9 +166,9 @@ var/list/flotation_gear = list(
 	if (current_area.cap_turf && istype(turf_above, current_area.cap_turf))
 		qdel(turf_above)
 
-/// Stops rain overlay from forming over the surface of the ocean.
+/// Stops rain overlay from forming over the surface of the ocean and coasts
 /datum/weather/can_weather_act_turf(turf/valid_weather_turf)
 	. = ..()
-	if (istype(valid_weather_turf, /turf/open/misc/beach/coast) || istype(valid_weather_turf, /turf/open/water/ocean_surface))
+	if (istype(valid_weather_turf, /turf/open/misc/beach) || istype(valid_weather_turf, /turf/open/water/ocean_surface))
 		return FALSE
 	return ..()
