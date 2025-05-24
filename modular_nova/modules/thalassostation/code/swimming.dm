@@ -43,9 +43,8 @@ var/list/flotation_gear = list(
 
 /atom/movable/proc/do_sink_or_float(buoyancy)
 	var/turf/open/swimmer_turf = src.loc
-	if (!istype(swimmer_turf, /turf/open) || (buoyancy == 0))
+	if(!swimmer_turf)
 		return
-
 	var/turf/turf_below = GET_TURF_BELOW(swimmer_turf)
 	if (buoyancy < 0 && istype(swimmer_turf, /turf/open/openspace) && istype(turf_below, /turf/open))
 		src.visible_message(
@@ -63,7 +62,7 @@ var/list/flotation_gear = list(
 			span_userdanger("You feel yourself pulled upward!")
 		)
 		src.forceMove(turf_above)
-	if (buoyancy > 0 && istype(turf_above, /turf/open/water/ocean_surface/))
+	if (buoyancy > 0 && istype(turf_above, /turf/open/ocean_surface/))
 		src.visible_message(
 			span_danger("[src] shoots up toward the surface!"),
 			span_userdanger("You feel yourself pulled upward!")
@@ -83,16 +82,15 @@ var/list/flotation_gear = list(
 	if (!istype(arrived, /mob/living))
 		return
 	var/mob/living/L = arrived
-	if (!src.liquids && !istype(src, /turf/open/water/ocean_surface/))
+	if (src.liquids?.liquid_state < LIQUID_STATE_SHOULDERS && !istype(src, /turf/open/ocean_surface/))
 		if (HAS_TRAIT(L, TRAIT_MOVE_SWIMMING))
 			REMOVE_TRAIT(L, TRAIT_MOVE_SWIMMING, SWIM_TRAIT_ELEMENT_ID)
 			L.visible_message(
 				span_notice("[L] stops swimming."),
-				span_notice("You stop to swim.")
+				span_notice("You stop swimming.")
 			)
 		return
 	var/turf/turf_below = GET_TURF_BELOW(src)
-	var/liquid_offset = src.liquid_height - src.turf_height
 	L.update_buoyancy()
 	// Handle sinking immediately
 	if (L.buyoancy < 0 && istype(turf_below, /turf/open))
@@ -104,10 +102,10 @@ var/list/flotation_gear = list(
 			REMOVE_TRAIT(L, TRAIT_MOVE_SWIMMING, SWIM_TRAIT_ELEMENT_ID)
 		return
 	// Not deep enough to swim
-	if (liquid_offset < LIQUID_STATE_WAIST && !istype(src, /turf/open/water/ocean_surface/))
+	if (src.liquids?.liquid_state < LIQUID_STATE_WAIST && !istype(src, /turf/open/ocean_surface/))
 		return
 	// Handle flight interruption
-	if (HAS_TRAIT(L, TRAIT_MOVE_FLYING) && src.liquid_height >= LIQUID_STATE_FULLTILE)
+	if (HAS_TRAIT(L, TRAIT_MOVE_FLYING) && src.liquids?.liquid_state >= LIQUID_STATE_FULLTILE)
 		if (istype(L, /mob/living/carbon))
 			var/mob/living/carbon/C = L
 			if ((C.movement_type & FLYING) && !C.buckled)
@@ -119,7 +117,7 @@ var/list/flotation_gear = list(
 					return
 
 	// Begin swimming
-	if (!HAS_TRAIT(L, TRAIT_MOVE_SWIMMING))
+	if (!HAS_TRAIT(L, TRAIT_MOVE_SWIMMING,))
 		ADD_TRAIT(L, TRAIT_MOVE_SWIMMING, SWIM_TRAIT_ELEMENT_ID)
 		L.visible_message(
 			span_notice("[L] starts to swim."),
@@ -156,8 +154,8 @@ var/list/flotation_gear = list(
 	if (!turf_above)
 		return
 
-	if (istype(turf_above, /turf/open/water/ocean_surface))
-		var/turf/open/water/ocean_surface/surface_above
+	if (istype(turf_above, /turf/open/ocean_surface))
+		var/turf/open/ocean_surface/surface_above
 		surface_above.icon_state = "deepwater"
 		surface_above.fishing_datum = /datum/fish_source/ocean/
 
@@ -169,6 +167,6 @@ var/list/flotation_gear = list(
 /// Stops rain overlay from forming over the surface of the ocean and coasts
 /datum/weather/can_weather_act_turf(turf/valid_weather_turf)
 	. = ..()
-	if (istype(valid_weather_turf, /turf/open/misc/beach) || istype(valid_weather_turf, /turf/open/water/ocean_surface))
+	if (istype(valid_weather_turf, /turf/open/misc/beach) || istype(valid_weather_turf, /turf/open/ocean_surface))
 		return FALSE
 	return ..()

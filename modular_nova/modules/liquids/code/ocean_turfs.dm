@@ -320,7 +320,7 @@
 	name = "submarine wall"
 
 /// Swimmable surface, can Z_Move through.
-/turf/open/water/ocean_surface
+/turf/open/ocean_surface
 	alpha = 255
 	base_icon_state = "water"
 	canSmoothWith = "0,4,"
@@ -328,9 +328,9 @@
 	icon_state = "deepwater"
 	name = "open ocean surface"
 	planetary_atmos = 1
-	fishing_datum = /datum/fish_source/ocean
+	var/fishing_datum = /datum/fish_source/ocean
 
-/turf/open/water/ocean_surface/Initialize()
+/turf/open/ocean_surface/Initialize()
 	. = ..()
 	var/turf/turf_below = GET_TURF_BELOW(src)
 	// If the turf below is solid, show shallower visuals
@@ -338,7 +338,7 @@
 		src.icon_state = "water"
 		src.fishing_datum = /datum/fish_source/ocean/beach
 
-/turf/open/water/ocean_surface/zPassIn(direction)
+/turf/open/ocean_surface/zPassIn(direction)
 	if(direction == DOWN)
 		for(var/obj/contained_object in contents)
 			if(contained_object.obj_flags & BLOCK_Z_IN_DOWN)
@@ -351,7 +351,7 @@
 		return TRUE
 	return FALSE
 
-/turf/open/water/ocean_surface/zPassOut(direction)
+/turf/open/ocean_surface/zPassOut(direction)
 	if(direction == DOWN)
 		for(var/obj/contained_object in contents)
 			if(contained_object.obj_flags & BLOCK_Z_OUT_DOWN)
@@ -376,7 +376,7 @@
 /obj/effect/overlay/ocean_surface/shallow
 	icon_state = "water"
 
-/turf/open/water/ocean_surface/Entered(atom/movable/arrived)
+/turf/open/ocean_surface/Entered(atom/movable/arrived)
 	. = ..()
 
 	if (src.icon_state == "water")
@@ -389,13 +389,14 @@
 		arrived.vis_contents += deep_surface
 		return
 
-/turf/open/water/ocean_surface/Exit(atom/movable/leaving, direction)
+/turf/open/ocean_surface/Exited(atom/movable/gone, direction)
 	. = ..()
 
-	for (var/atom/A in leaving.vis_contents)
+	for (var/atom/A in gone.vis_contents)
 		if (A.name == "ocean_surface")
 			qdel(A)
 
+///We do not want beaches and the surface of the ocean to get slippery when the air is humid.
 /turf/open/misc/beach/water_vapor_gas_act()
 	. = ..()
 	src.ClearWet()

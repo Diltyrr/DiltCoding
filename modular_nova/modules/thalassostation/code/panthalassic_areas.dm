@@ -20,7 +20,7 @@
 	name = "Ocean"
 	area_flags = CAVES_ALLOWED | MOB_SPAWN_ALLOWED
 	map_generator = /datum/map_generator/cave_generator/panthalassic_mid_generator
-	cap_turf = /turf/open/misc/thalassostation
+	cap_turf = /turf/open/misc/thalassostation_submerged
 	base_lighting_color = "#A0C8FF"
 
 /area/panthalassic/floor

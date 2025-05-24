@@ -28,7 +28,7 @@
 /datum/map_generator/cave_generator/panthalassic_oceanfloor_generator
 
 	weighted_open_turf_types = list(
-		/turf/open/misc/thalassostation = 1
+		/turf/open/misc/thalassostation_submerged = 1
 	)
 
 	weighted_closed_turf_types = list(
@@ -56,7 +56,7 @@
 /datum/map_generator/cave_generator/panthalassic_bathypelagic_generator
 
 	weighted_open_turf_types = list(
-		/turf/open/misc/thalassostation/rock/heavy/bathypelagic =1
+		/turf/open/misc/thalassostation_submerged/rock/heavy/bathypelagic =1
 	)
 
 	weighted_closed_turf_types = list(
