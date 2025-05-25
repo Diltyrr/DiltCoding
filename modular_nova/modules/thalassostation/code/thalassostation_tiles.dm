@@ -1,12 +1,10 @@
 /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation
 	starting_mixture = list(/datum/reagent/water/salt = 600) //This could probably be changed to a variable from a proc if we wanted the option to pick from different chemicals.
 	starting_temp = 300
+	liquid_state = 5
 
 /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/opensubmerged
 	starting_mixture = list(/datum/reagent/water/salt = 600) //This could probably be changed to a variable from a proc if we wanted the option to pick from different chemicals.
-
-/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/surface
-	starting_mixture = list(/datum/reagent/water/salt = 300)
 
 
 /obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation/bathypelagic
@@ -108,14 +106,6 @@
 
 /turf/open/misc/thalassostation_submerged/bottom
 	baseturfs = /turf/open/misc/thalassostation_submerged/bottom
-
-/turf/open/liquids_change(new_state)
-	. = ..()
-	if(src.liquids?.liquid_state >= LIQUID_STATE_SHOULDERS)
-		AddElement(/datum/element/soft_landing)
-	if(src.liquids?.liquid_state < LIQUID_STATE_SHOULDERS)
-		RemoveElement(/datum/element/soft_landing)
-
 
 /turf/open/misc/thalassostation_submerged/Initialize(mapload)
 	. = ..()
@@ -236,6 +226,10 @@
 ///We don't want surface floating over a non full turf, or full turf without a surface.
 /turf/open/liquids_change(new_state)
 	. = ..()
+	var/list/adj_turf = get_adjacent_turfs(src)
+	for (var/turf/checking_turf in adj_turf)
+		if(!checking_turf?.liquids?.immutable)
+			SSliquids.add_active_turf(checking_turf)
 	if(istype(src, /turf/open/ocean_surface/thalassostation) || istype(src, /turf/open/misc/beach))
 		qdel(src.liquids)
 		return
@@ -270,3 +264,12 @@
 
 /turf/open/misc/beach/sand/thalassostation
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
+
+/turf/open/proc/add_remove_lightrays()
+	var/turf/above_turf = GET_TURF_ABOVE(src)
+	if(!above_turf)
+		return
+	if(istype(above_turf, /turf/open/openspace || /turf/open/ocean_surface))
+		src.color = "#FFFF"
+	else
+		src.color = null

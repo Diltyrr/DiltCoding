@@ -236,6 +236,17 @@
 	turf_type = /turf/open/misc/ocean/rock/heavy
 	color = "#58606b"
 
+///If we do not do this, the light overlay those uses to simulate being underwater gets added to the replacing open tile.
+/turf/closed/mineral/random/gets_drilled(mob/user, give_exp)
+	. = ..()
+	var/turf/turf_above = GET_TURF_ABOVE(src)
+	if(!turf_above)
+		return
+	if(istype(turf_above, /turf/open/openspace || /turf/open/ocean_surface))
+		return
+	for(var/overlays_to_remove in src.overlays)
+		qdel(overlays_to_remove)
+
 /obj/effect/abstract/liquid_turf/immutable/canal
 	starting_mixture = list(/datum/reagent/water = 100)
 
@@ -330,6 +341,10 @@
 	planetary_atmos = 1
 	var/fishing_datum = /datum/fish_source/ocean
 
+/turf/open/ocean_surface/Initialize(mapload)
+	. = ..()
+	src.AddComponent(/datum/component/fishing_spot, GLOB.preset_fish_sources[/datum/fish_source/ocean])
+
 /turf/open/ocean_surface/Initialize()
 	. = ..()
 	var/turf/turf_below = GET_TURF_BELOW(src)
@@ -366,12 +381,13 @@
 	icon_state = "deepwater"
 	density = FALSE
 	anchored = TRUE
-	appearance_flags = RESET_TRANSFORM|RESET_COLOR|RESET_ALPHA|KEEP_TOGETHER
+	appearance_flags = RESET_TRANSFORM|RESET_COLOR|KEEP_TOGETHER
 	vis_flags = VIS_INHERIT_PLANE|VIS_INHERIT_ID
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	blend_mode = BLEND_INSET_OVERLAY
 	layer = WATER_VISUAL_OVERLAY_LAYER
 	plane = FLOAT_PLANE
+	alpha = 140
 
 /obj/effect/overlay/ocean_surface/shallow
 	icon_state = "water"

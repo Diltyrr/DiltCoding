@@ -45,8 +45,10 @@ var/list/flotation_gear = list(
 	var/turf/open/swimmer_turf = src.loc
 	if(!swimmer_turf)
 		return
+	if(!has_gravity(swimmer_turf))
+		return
 	var/turf/turf_below = GET_TURF_BELOW(swimmer_turf)
-	if (buoyancy < 0 && istype(swimmer_turf, /turf/open/openspace) && istype(turf_below, /turf/open))
+	if (buoyancy < 0 && istype(swimmer_turf, /turf/open/openspace || /turf/open/ocean_surface) && istype(turf_below, /turf/open))
 		src.visible_message(
 			span_danger("[src] sinks like a stone!"),
 			span_userdanger("You feel yourself pulled to the bottom!")
@@ -117,7 +119,7 @@ var/list/flotation_gear = list(
 					return
 
 	// Begin swimming
-	if (!HAS_TRAIT(L, TRAIT_MOVE_SWIMMING,))
+	if (!HAS_TRAIT(L, TRAIT_MOVE_SWIMMING))
 		ADD_TRAIT(L, TRAIT_MOVE_SWIMMING, SWIM_TRAIT_ELEMENT_ID)
 		L.visible_message(
 			span_notice("[L] starts to swim."),
@@ -155,7 +157,7 @@ var/list/flotation_gear = list(
 		return
 
 	if (istype(turf_above, /turf/open/ocean_surface))
-		var/turf/open/ocean_surface/surface_above
+		var/turf/open/ocean_surface/surface_above = turf_above
 		surface_above.icon_state = "deepwater"
 		surface_above.fishing_datum = /datum/fish_source/ocean/
 
