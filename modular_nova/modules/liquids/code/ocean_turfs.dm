@@ -236,17 +236,6 @@
 	turf_type = /turf/open/misc/ocean/rock/heavy
 	color = "#58606b"
 
-///If we do not do this, the light overlay those uses to simulate being underwater gets added to the replacing open tile.
-/turf/closed/mineral/random/gets_drilled(mob/user, give_exp)
-	. = ..()
-	var/turf/turf_above = GET_TURF_ABOVE(src)
-	if(!turf_above)
-		return
-	if(istype(turf_above, /turf/open/openspace || /turf/open/ocean_surface))
-		return
-	for(var/overlays_to_remove in src.overlays)
-		qdel(overlays_to_remove)
-
 /obj/effect/abstract/liquid_turf/immutable/canal
 	starting_mixture = list(/datum/reagent/water = 100)
 
@@ -396,7 +385,15 @@
 
 /turf/open/ocean_surface/Entered(atom/movable/arrived)
 	. = ..()
-	arrived.apply_status_effect(/datum/status_effect/water_affected)
+	if(istype(arrived, /mob/living/carbon))
+		var/mob/living/carbon/arrived_carbon = arrived
+		var/slowdown_amount = LIQUID_STATE_SHOULDERS * 0.5
+		arrived_carbon.add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/status_effect/water_slowdown, multiplicative_slowdown = slowdown_amount)
+		var/fraction = min(1, (arrived_carbon.body_position == LYING_DOWN ? LIQUID_STATE_SHOULDERS + LYING_DOWN_SUBMERGEMENT_STATE_BONUS : LIQUID_STATE_SHOULDERS) / TOTAL_LIQUID_STATES)
+		var/datum/reagents/temp_reagents = new()
+		temp_reagents.add_reagent(/datum/reagent/water/salt, SUBMERGEMENT_REAGENTS_TOUCH_AMOUNT * fraction)
+		temp_reagents.expose(arrived_carbon, TOUCH)
+		qdel(temp_reagents)
 	if (src.icon_state == "water")
 		var/obj/effect/overlay/ocean_surface/shallow/shallow_surface = new()
 		arrived.vis_contents += shallow_surface

@@ -92,6 +92,9 @@
 ///Needed because using the cavegen flora generator will spawn floating structure since I'm using openspaces.
 /turf/open/misc/thalassostation_submerged/Initialize(mapload)
 	. = ..()
+	if (!mapload)
+		return
+
 	if (prob(20))
 		var/list/possible_spawns = list(
 			/obj/structure/flora/ocean/coral,
@@ -102,7 +105,7 @@
 			/obj/structure/flora/rock/pile
 		)
 		var/type_to_spawn = pick(possible_spawns)
-		new type_to_spawn(src) // Spawns the object on this turf
+		new type_to_spawn(src)
 
 /turf/open/misc/thalassostation_submerged/bottom
 	baseturfs = /turf/open/misc/thalassostation_submerged/bottom
