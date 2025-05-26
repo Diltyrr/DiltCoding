@@ -386,6 +386,8 @@
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 	blend_mode = BLEND_INSET_OVERLAY
 	layer = WATER_VISUAL_OVERLAY_LAYER
+	pixel_x = -16
+	pixel_y = -16
 	plane = FLOAT_PLANE
 	alpha = 140
 
@@ -394,7 +396,7 @@
 
 /turf/open/ocean_surface/Entered(atom/movable/arrived)
 	. = ..()
-
+	arrived.apply_status_effect(/datum/status_effect/water_affected)
 	if (src.icon_state == "water")
 		var/obj/effect/overlay/ocean_surface/shallow/shallow_surface = new()
 		arrived.vis_contents += shallow_surface
