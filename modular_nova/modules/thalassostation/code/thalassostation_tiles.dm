@@ -268,11 +268,52 @@
 /turf/open/misc/beach/sand/thalassostation
 	initial_gas_mix = THALASSOSTATION_DEFAULT_ATMOS
 
-/turf/open/proc/add_remove_lightrays()
-	var/turf/above_turf = GET_TURF_ABOVE(src)
-	if(!above_turf)
+/obj/effect/overlay/lightray
+	name = "lightray"
+	icon = 'modular_nova/modules/thalassostation/icons/light_ray.dmi'
+	icon_state = "uw_lightray"
+	anchored = TRUE
+	layer = EFFECTS_LAYER
+	blend_mode = BLEND_ADD
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	alpha = 140
+
+/turf/open/proc/try_add_lightray()
+	var/turf/above = GET_TURF_ABOVE(src)
+	if(!above)
 		return
-	if(istype(above_turf, /turf/open/openspace || /turf/open/ocean_surface))
-		src.color = "#FFFF"
-	else
-		src.color = null
+	if(src.liquids?.liquid_state == LIQUID_STATE_FULLTILE && istype(above, /turf/open/openspace/thalassostation_submerged) || istype(above, /turf/open/ocean_surface/thalassostation))
+		var/obj/effect/overlay/lightray = new /obj/effect/overlay/lightray(src)
+		src.vis_contents += lightray
+
+/turf/open/Initialize()
+	. = ..()
+	src.try_add_lightray()
+
+/turf/proc/update_lightrays()
+	var/should_have = (src.liquids?.liquid_state == LIQUID_STATE_FULLTILE)
+	var/turf/above = GET_TURF_ABOVE(src)
+	should_have = should_have && (istype(above, /turf/open/openspace/thalassostation_submerged) || istype(above, /turf/open/ocean_surface/thalassostation))
+
+	var/obj/effect/overlay/lightray/existing
+	for (var/atom/A in src.vis_contents)
+		if (istype(A, /obj/effect/overlay/lightray))
+			existing = A
+			break
+
+	if (should_have && !existing)
+		var/obj/effect/overlay/lightray/new_ray = new(src)
+		new_ray.alpha = 140
+		src.vis_contents += new_ray
+	else if (!should_have && existing)
+		qdel(existing)
+
+/turf/ChangeTurf(path, list/new_baseturfs, flags)
+	var/turf/below = GET_TURF_BELOW(src)
+	. = ..()
+	if(istype(below, /turf/open))
+		below.update_lightrays()
+
+/turf/open/liquids_change(new_state)
+	. = ..()
+	src.update_lightrays()

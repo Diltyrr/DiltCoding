@@ -164,7 +164,7 @@ var/list/flotation_gear = list(
 	// Check for replacement logic
 	var/area/current_area = get_area(turf_above)
 	if (current_area.cap_turf && istype(turf_above, current_area.cap_turf))
-		qdel(turf_above)
+		turf_above.ChangeTurf(/turf/open/openspace/thalassostation, null, CHANGETURF_IGNORE_AIR)
 
 /// Stops rain overlay from forming over the surface of the ocean and coasts
 /datum/weather/can_weather_act_turf(turf/valid_weather_turf)
