@@ -279,12 +279,17 @@
 	alpha = 140
 
 /turf/open/proc/try_add_lightray()
-	var/turf/above = GET_TURF_ABOVE(src)
-	if(!above)
+	var/turf/below = GET_TURF_BELOW(src)
+	if(!below)
 		return
-	if(src.liquids?.liquid_state == LIQUID_STATE_FULLTILE && istype(above, /turf/open/openspace/thalassostation_submerged) || istype(above, /turf/open/ocean_surface/thalassostation))
-		var/obj/effect/overlay/lightray = new /obj/effect/overlay/lightray(src)
-		src.vis_contents += lightray
+
+	if((below.liquids?.liquid_state == LIQUID_STATE_FULLTILE) && (istype(src, /turf/open/openspace/thalassostation_submerged) || istype(src, /turf/open/ocean_surface/thalassostation)))
+		// Check if a lightray already exists in vis_contents
+		for(var/obj/effect/overlay/lightray/L in src.vis_contents)
+			return // Already present, do nothing
+
+		var/obj/effect/overlay/lightray/newray = new /obj/effect/overlay/lightray(below)
+		src.vis_contents += newray
 
 /turf/open/Initialize()
 	. = ..()
@@ -296,7 +301,7 @@
 	should_have = should_have && (istype(above, /turf/open/openspace/thalassostation_submerged) || istype(above, /turf/open/ocean_surface/thalassostation))
 
 	var/obj/effect/overlay/lightray/existing
-	for (var/atom/A in src.vis_contents)
+	for (var/atom/A in src.contents)
 		if (istype(A, /obj/effect/overlay/lightray))
 			existing = A
 			break
@@ -311,6 +316,7 @@
 /turf/ChangeTurf(path, list/new_baseturfs, flags)
 	var/turf/below = GET_TURF_BELOW(src)
 	. = ..()
+	src.update_lightrays()
 	if(istype(below, /turf/open))
 		below.update_lightrays()
 

@@ -1,7 +1,6 @@
 /area/panthalassic
 	name = "Beach"
 	base_lighting_alpha = 255
-	base_lighting_color = COLOR_STARLIGHT
 	static_lighting = FALSE
 	outdoors = TRUE
 	requires_power = TRUE
@@ -30,28 +29,59 @@
 	base_lighting_color = COLOR_STARLIGHT
 	area_flags = FLORA_ALLOWED | MOB_SPAWN_ALLOWED
 
-/area/panthalassic/surface/Initialize()
-	. = ..()
+/obj/effect/fakelight/panthalassic_sun/underwater
+	name = "underwater sunlight"
+	desc = "It's less bright."
+	light_power = 0.8
+	light_color = "#A0C8FF"
 
-	for (var/turf/T in get_area_turfs(src))
-		if(prob(25))
-			new /obj/effect/fakelight/panthalassic_sun(T)
+/obj/effect/fakelight/panthalassic_sun/underwater_deep
+	name = "deep underwater sunlight"
+	desc = "It's trying okay?"
+	light_range = 6
+	light_power = 0.6
+	light_color = "#406080"
+
+/turf/open/ocean_surface/thalassostation/Initialize()
+	. = ..()
+	for(var/obj/effect/fakelight/panthalassic_sun/S in src.vis_contents)
+		return // Already present, do nothing
+
+	new /obj/effect/fakelight/panthalassic_sun
+
+/turf/open/misc/thalassostation_submerged/Initialize()
+	. = ..()
+	for(var/obj/effect/fakelight/panthalassic_sun/underwater/S in src.vis_contents)
+		return // Already present, do nothing
+
+	new /obj/effect/fakelight/panthalassic_sun/underwater
+
+/turf/open/openspace/thalassostation/Initialize()
+	. = ..()
+	for(var/obj/effect/fakelight/panthalassic_sun/underwater/S in src.vis_contents)
+		return // Already present, do nothing
+
+	new /obj/effect/fakelight/panthalassic_sun/underwater
+
+/turf/open/misc/thalassostation_submerged/Initialize()
+	. = ..()
+	for(var/obj/effect/fakelight/panthalassic_sun/underwater_deep/S in src.vis_contents)
+		return // Already present, do nothing
+
+	new /obj/effect/fakelight/panthalassic_sun/underwater_deep
 
 /area/panthalassic/middle
 	name = "Ocean"
 	area_flags = CAVES_ALLOWED | MOB_SPAWN_ALLOWED
 	map_generator = /datum/map_generator/cave_generator/panthalassic_mid_generator
 	cap_turf = /turf/open/misc/thalassostation_submerged
-	base_lighting_color = "#A0C8FF"
 
 /area/panthalassic/floor
 	name = "Ocean_Floor"
 	area_flags = CAVES_ALLOWED | FLORA_ALLOWED | MOB_SPAWN_ALLOWED
 	map_generator = /datum/map_generator/cave_generator/panthalassic_oceanfloor_generator
-	base_lighting_color = "#406080"
 
 /area/panthalassic/bathypelagic
 	name = "Bathypelagic zone"
 	area_flags = CAVES_ALLOWED | FLORA_ALLOWED | MOB_SPAWN_ALLOWED
 	map_generator = /datum/map_generator/cave_generator/panthalassic_bathypelagic_generator
-	base_lighting_color = "#000000"

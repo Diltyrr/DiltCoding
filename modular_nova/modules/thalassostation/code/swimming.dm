@@ -151,7 +151,6 @@ var/list/flotation_gear = list(
 /// If the turf above is a visual cap_turf placed over openspace, remove it.
 /turf/closed/ChangeTurf(path, list/new_baseturfs, flags)
 	. = ..()
-
 	var/turf/turf_above = GET_TURF_ABOVE(src)
 	if (!turf_above)
 		return
@@ -162,9 +161,9 @@ var/list/flotation_gear = list(
 		surface_above.fishing_datum = /datum/fish_source/ocean/
 
 	// Check for replacement logic
-	var/area/current_area = get_area(turf_above)
-	if (current_area.cap_turf && istype(turf_above, current_area.cap_turf))
-		turf_above.ChangeTurf(/turf/open/openspace/thalassostation, null, CHANGETURF_IGNORE_AIR)
+	var/area/above_area = get_area(turf_above)
+	if (above_area.cap_turf && istype(turf_above, above_area.cap_turf))
+		turf_above.ChangeTurf(/turf/open/openspace/thalassostation_submerged, null, CHANGETURF_IGNORE_AIR)
 
 /// Stops rain overlay from forming over the surface of the ocean and coasts
 /datum/weather/can_weather_act_turf(turf/valid_weather_turf)
