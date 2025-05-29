@@ -31,7 +31,7 @@
 			liquids.remove_turf(src)
 		else
 			qdel(liquids, TRUE)
-	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation)
+	var/obj/effect/abstract/liquid_turf/immutable/new_immmutable = SSliquids.get_immutable(/obj/effect/abstract/liquid_turf/immutable/ocean/thalassostation, src)
 	new_immmutable.mapload_turf(src)
 
 /turf/open/misc/ironsand/thalassostation_submerged

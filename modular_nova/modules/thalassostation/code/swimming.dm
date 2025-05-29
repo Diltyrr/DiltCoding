@@ -145,7 +145,7 @@ var/list/flotation_gear = list(
 	if (current_area.cap_turf)
 		var/turf/turf_below = GET_TURF_BELOW(src)
 		if (istype(turf_below, /turf/closed/mineral))
-			ChangeTurf(current_area.cap_turf, null, CHANGETURF_IGNORE_AIR)
+			ChangeTurf(current_area.cap_turf)
 
 
 /// If the turf above is a visual cap_turf placed over openspace, remove it.
