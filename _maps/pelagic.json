@@ -1,0 +1,28 @@
+{
+	"version": 1,
+	"map_name": "Pelagic",
+	"map_path": "map_files/Pelagic",
+	"map_file": "Pelagic.dmm",
+	"space_ruin_levels": 0,
+	"space_empty_levels": 0,
+	"planetary": 1,
+	"shuttles": {
+		"cargo": "cargo_nova",
+		"ferry": "ferry_fancy",
+		"whiteship": "whiteship_box",
+		"emergency": "emergency_box"
+	},
+	"traits": [
+		{
+			"Linkage": "Cross",
+			"Gravity": true,
+			"Baseturf": "/turf/open/ocean_surface/thalassostation"
+		}
+	],
+	"minetype": "none",
+	"job_changes": {
+		"Captain": {
+			"special_charter": "moon"
+		}
+	}
+}

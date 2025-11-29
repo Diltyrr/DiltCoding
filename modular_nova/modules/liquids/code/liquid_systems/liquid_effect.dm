@@ -441,7 +441,7 @@
 			C.apply_status_effect(/datum/status_effect/water_affected)
 	else if (isliving(AM))
 		var/mob/living/L = AM
-		if(prob(7) && !(L.movement_type & FLYING))
+		if(prob(7) && !(L.movement_type & FLYING | SWIMMING))
 			L.slip(1 SECONDS, T, NO_SLIP_WHEN_WALKING, 2 SECONDS, TRUE)
 	if(fire_state)
 		AM.fire_act((T20C+50) + (50*fire_state), 125)
@@ -471,16 +471,17 @@
 		else
 			to_chat(M, span_userdanger("You fall in the [reagents_to_text()]!"))
 
-/obj/effect/abstract/liquid_turf/Initialize(mapload)
+/obj/effect/abstract/liquid_turf/Initialize()
 	. = ..()
 	if(!SSliquids)
 		CRASH("Liquid Turf created with the liquids sybsystem not yet initialized!")
-	if(!immutable)
+	if(loc)
 		my_turf = loc
 		RegisterSignal(my_turf, COMSIG_ATOM_ENTERED, PROC_REF(movable_entered))
 		RegisterSignal(my_turf, COMSIG_TURF_MOB_FALL, PROC_REF(mob_fall))
 		RegisterSignal(my_turf, COMSIG_ATOM_EXAMINE, PROC_REF(examine_turf))
-		SSliquids.add_active_turf(my_turf)
+		if(!immutable)
+			SSliquids.add_active_turf(my_turf)
 
 		SEND_SIGNAL(my_turf, COMSIG_TURF_LIQUIDS_CREATION, src)
 
@@ -637,6 +638,13 @@
 	T.liquids = src
 	T.vis_contents += src
 	SSliquids.active_immutables[T] = TRUE
+	RegisterSignal(T, COMSIG_ATOM_ENTERED, PROC_REF(movable_entered))
+	RegisterSignal(T, COMSIG_TURF_MOB_FALL, PROC_REF(mob_fall))
+
+///Bypass the activation of immutables liquids tiles on mapload for optimization. Maps should be made in a way that they don't need to recalculate liquid levels on startup.
+/obj/effect/abstract/liquid_turf/proc/mapload_turf(turf/T)
+	T.liquids = src
+	T.vis_contents += src
 	RegisterSignal(T, COMSIG_ATOM_ENTERED, PROC_REF(movable_entered))
 	RegisterSignal(T, COMSIG_TURF_MOB_FALL, PROC_REF(mob_fall))
 
