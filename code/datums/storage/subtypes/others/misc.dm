@@ -8,7 +8,7 @@
 	allow_quick_gather = TRUE
 	allow_quick_empty = TRUE
 
-/datum/storage/test_tube_rack/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/test_tube_rack/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(/obj/item/reagent_containers/cup/tube)
 
@@ -18,7 +18,7 @@
 	max_slots = 14
 	animated = FALSE
 
-/datum/storage/surgery_tray/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/surgery_tray/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(list(
 		/obj/item/autopsy_scanner,
@@ -27,15 +27,18 @@
 		/obj/item/cautery,
 		/obj/item/circular_saw,
 		/obj/item/clothing/mask/surgical,
-		/obj/item/clothing/suit/toggle/labcoat/nova/hospitalgown, // NOVA EDIT ADDITION
+		/obj/item/clothing/suit/toggle/labcoat/nova/surgical_gown, // NOVA EDIT ADDITION
 		/obj/item/hemostat,
 		/obj/item/razor,
+		/obj/item/reagent_containers/medigel/sterilizine,
 		/obj/item/retractor,
 		/obj/item/scalpel,
+		/obj/item/shears,
 		/obj/item/stack/medical/bone_gel,
 		/obj/item/stack/sticky_tape/surgical,
 		/obj/item/surgical_drapes,
 		/obj/item/surgicaldrill,
+		/obj/item/blood_scanner,
 	))
 
 ///Organ box
@@ -43,7 +46,7 @@
 	max_specific_storage = WEIGHT_CLASS_BULKY
 	max_total_storage = 21
 
-/datum/storage/organ_box/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/organ_box/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(list(
 		/obj/item/organ,
@@ -66,7 +69,7 @@
 	max_total_storage = 200
 	max_slots = 50
 
-/datum/storage/portable_chem_mixer/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/portable_chem_mixer/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(list(
 		/obj/item/reagent_containers/cup/beaker,
@@ -83,7 +86,7 @@
 	silent = TRUE
 	allow_big_nesting = TRUE
 
-/datum/storage/implant/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/implant/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(cant_hold_list = /obj/item/disk/nuclear)
 
@@ -93,7 +96,7 @@
 	max_slots = 10
 	do_rustle = FALSE
 
-/datum/storage/drone/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/drone/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(list(
 		/obj/item/crowbar/drone,
@@ -116,7 +119,7 @@
 	max_total_storage = 21
 
 ///Easter basket
-/datum/storage/basket/easter/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/basket/easter/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(list(
 		/obj/item/food/egg,
@@ -142,74 +145,18 @@
 /datum/storage/briefcase
 	max_total_storage = 21
 
-//=======================Fancy storages======================
-///Donut box
-/datum/storage/donut/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
-	. = ..()
-	set_holdable(/obj/item/food/donut)
-
-///Egg box
-/datum/storage/egg_box/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
-	. = ..()
-	set_holdable(/obj/item/food/egg)
-
-///Generic fancy holder
-/datum/storage/fancy_holder/New(obj/item/storage/fancy/candle_box/parent, max_slots, max_specific_storage, max_total_storage)
-	. = ..()
-	set_holdable(parent.spawn_type)
-
-///Heart box
-/datum/storage/heart_box/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
-	. = ..()
-	set_holdable(/obj/item/food/bonbon)
-
-///Cigrate boxes
-/datum/storage/cigarette_box
-	display_contents = FALSE
-
-/datum/storage/cigarette_box/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
-	. = ..()
-	set_holdable(list(
-		/obj/item/cigarette,
-		/obj/item/lighter,
-	))
-
-///Coffee condiment display
-/datum/storage/coffee_condi_display
-	max_slots = 14
-
-/datum/storage/coffee_condi_display/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
-	. = ..()
-	set_holdable(list(
-		/obj/item/reagent_containers/condiment/pack/sugar,
-		/obj/item/reagent_containers/condiment/creamer,
-		/obj/item/reagent_containers/condiment/pack/astrotame,
-		/obj/item/reagent_containers/condiment/chocolate,
-	))
-
-///Coffee cart rack
-/datum/storage/coffee_cart_rack
-	max_slots = 4
-
-/datum/storage/coffee_cart_rack/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
-	. = ..()
-	set_holdable(/obj/item/coffee_cartridge)
-
-//=================================================
-
 ///Pill bottle
 /datum/storage/pillbottle
 	allow_quick_gather = TRUE
 	open_sound = 'sound/items/handling/pill_bottle_open.ogg'
 	open_sound_vary = FALSE
 
-/datum/storage/pillbottle/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/pillbottle/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(list(
 		/obj/item/reagent_containers/applicator,
 		/obj/item/food/bait/natural,
 	))
-
 
 ///Six pack beer
 /datum/storage/sixcan
@@ -217,7 +164,7 @@
 	max_total_storage = 12
 	max_slots = 6
 
-/datum/storage/sixcan/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/sixcan/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(list(
 		/obj/item/reagent_containers/cup/soda_cans,
@@ -231,13 +178,14 @@
 	max_specific_storage = WEIGHT_CLASS_SMALL
 	max_slots = 4
 
-/datum/storage/wallet/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/wallet/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(
 		can_hold_list = list(
 			// NOVA EDIT ADDITION BEGIN
 			/obj/item/condom_pack,
 			/obj/item/gbp_punchcard,
+			/obj/item/disk/neuroware,
 			// NOVA EDIT ADDITION END
 			/obj/item/stack/spacecash,
 			/obj/item/holochip,
@@ -268,6 +216,7 @@
 			/obj/item/stack/medical,
 			/obj/item/stamp,
 			/obj/item/toy/crayon,
+			/obj/item/poker_chip,
 		),
 		cant_hold_list = list(
 			/obj/item/screwdriver/power
@@ -275,7 +224,7 @@
 	)
 
 ///Crayons storage
-/datum/storage/crayons/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/crayons/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(
 		can_hold_list = /obj/item/toy/crayon,
@@ -290,7 +239,7 @@
 /datum/storage/dice
 	allow_quick_gather = TRUE
 
-/datum/storage/dice/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/dice/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(/obj/item/dice)
 
@@ -315,7 +264,7 @@
 	max_total_storage = 120
 	max_slots = 60
 
-/datum/storage/card_binder/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/card_binder/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(/obj/item/tcgcard)
 
@@ -327,6 +276,13 @@
 	do_rustle = FALSE
 	animated = FALSE
 
-/datum/storage/toiletbong/New(atom/parent, max_slots, max_specific_storage, max_total_storage)
+/datum/storage/toiletbong/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
 	set_holdable(/obj/item/food)
+
+/// Carved Books
+/datum/storage/carved_book
+	max_slots = 1
+
+/datum/storage/carved_book/bible
+	max_specific_storage = WEIGHT_CLASS_SMALL

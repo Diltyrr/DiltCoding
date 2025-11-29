@@ -9,8 +9,9 @@ SUBSYSTEM_DEF(minor_mapping)
 	flags = SS_NO_FIRE
 	///a list of vermin we pick from to spawn.
 	var/list/vermin_chances = list(
-		/mob/living/basic/mouse = 80,
-		/mob/living/basic/snail = 18,
+		/mob/living/basic/mouse = 72,
+		/mob/living/basic/snail = 16,
+		/mob/living/basic/stoat = 10,
 		/mob/living/basic/regal_rat/controlled = 2,
 	)
 
@@ -21,7 +22,7 @@ SUBSYSTEM_DEF(minor_mapping)
 	return SS_INIT_NO_NEED
 #else
 	trigger_migration(CONFIG_GET(number/mice_roundstart))
-	place_satchels(satchel_amount = 10) //NOVA EDIT CHANGE - ORIGINAL : place_satchels(satchel_amount = 2)
+	place_satchels(satchel_amount = 10) // NOVA EDIT CHANGE - ORIGINAL : place_satchels(satchel_amount = 2)
 	return SS_INIT_SUCCESS
 #endif
 

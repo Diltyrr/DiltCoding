@@ -7,6 +7,7 @@
 	ai_movement = /datum/ai_movement/basic_avoidance
 	idle_behavior = /datum/idle_behavior/idle_random_walk
 	planning_subtrees = list(
+		/datum/ai_planning_subtree/escape_captivity,
 		/datum/ai_planning_subtree/simple_find_target,
 		/datum/ai_planning_subtree/targeted_mob_ability/ice_whelp,
 		/datum/ai_planning_subtree/attack_obstacle_in_path,
@@ -17,8 +18,6 @@
 	)
 
 /// Cancel melee attacks when we have our breath weapon
-/datum/ai_planning_subtree/basic_melee_attack_subtree
-
 /datum/ai_planning_subtree/basic_melee_attack_subtree/ice_whelp
 	melee_attack_behavior = /datum/ai_behavior/basic_melee_attack/ice_whelp
 
