@@ -8278,6 +8278,7 @@
 #include "modular_nova\modules\GAGS\nsfw\structures.dm"
 #include "modular_nova\modules\GAGS\nsfw\suits.dm"
 #include "modular_nova\modules\GAGS\nsfw\uniforms.dm"
+#include "modular_nova\modules\geothermic_engine\code\geothermic_engine.dm"
 #include "modular_nova\modules\ghost_mining\code\boulder_collector.dm"
 #include "modular_nova\modules\ghost_mining\code\ghost_vent.dm"
 #include "modular_nova\modules\ghostcafe\code\dusts_on_catatonia.dm"
