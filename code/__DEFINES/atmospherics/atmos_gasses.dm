@@ -20,3 +20,4 @@
 #define GAS_ANTINOBLIUM "antinoblium"
 #define GAS_HALON "halon"
 #define GAS_GOBLIN "goblin" // NOVA EDIT ADDITION
+#define GAS_WATER_VAPOR_MINERAL_IMPURITIES "water_vapor_mineral_impurities" // NOVA EDIT ADDITION
