@@ -21,5 +21,16 @@
 /// Caliber used by the kinetic gun
 #define CALIBER_KINETICBALL "Kinetic Ball"
 
+///micro KTB railgun caliber
+#define CALIBER_177FEATHERLINE "4.5x22mmR Featherline"
+///small KTB railgun caliber
+#define CALIBER_257MIDLINE "6.5x28mmR Midline"
+///standard KTB railgun caliber
+#define CALIBER_354RAILJACK "9x60mmR Railjack Standard"
+///bespoke sniper KTB railgun caliber
+#define CALIBER_386LANCECORE "9.8x72mmR Lancecore"
+///bespoke AMR KTB railgun caliber
+#define CALIBER_551TITANSTRIKE "14x90mmR Titanstrike"
+
 /// Define used for shaded-charge weapons that have firemode-based labels on their icons
 #define SHADED_CHARGE_MODE_LABELED 2

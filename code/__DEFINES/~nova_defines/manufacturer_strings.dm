@@ -35,3 +35,5 @@
 #define COMPANY_KAHRAMAN "It has a <b>[span_red("red label")] with <b>[span_red("K - A - S")]</b> printed on it, alongside various xerxian proof-marks.</b>"
 
 #define COMPANY_REMOVED "It has had <b>[span_grey("all identifying marks scrubbed off")].</b>"
+
+#define COMPANY_KESSLER_THORNE "It bears a small <b>[span_brass("interlocking coil")]</b> alongside <b>[span_horizonblue("Kessler-Thorne Ballistics")]</b> etched with immaculate precision."
